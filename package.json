@@ -45,7 +45,7 @@
     "ci",
     "jasmine",
     "jasmine-node",
-    "istabul",
+    "istanbul",
     "coverage"
   ]
 }
