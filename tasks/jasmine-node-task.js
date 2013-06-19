@@ -100,7 +100,7 @@ module.exports = function (grunt) {
         }
 
         var projectRoot = grunt.config("jasmine_node.projectRoot") || ".";
-        var specFolders = grunt.config("jasmine_node.specFolders") || [];
+        var specFolders = grunt.config("jasmine_node.specFolders");
         var forceExit = grunt.config("jasmine_node.options.forceExit") || false;
         var match = grunt.config("jasmine_node.options.match") || '.';
         var matchall = grunt.config("jasmine_node.options.matchall") || false;
@@ -136,8 +136,8 @@ module.exports = function (grunt) {
         var runFn = function () {
 
 
-            if (projectRoot) {
-                specFolders.push(projectRoot);
+            if (specFolders == null) {
+                specFolders = [projectRoot];
             }
 
             if (_.isUndefined(isVerbose)) {
