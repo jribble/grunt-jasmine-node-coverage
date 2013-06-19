@@ -1,10 +1,4 @@
-var Calculator = function Calculator() {
-  return {
-    add:function add(firstNum, secondNum) {
-      return firstNum + secondNum;
-    }
-  };
-};
+var Calculator = require('./calculator');
 
 describe("Calculator", function () {
   var calculator;
