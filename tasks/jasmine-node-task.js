@@ -31,11 +31,14 @@ module.exports = function (grunt) {
             }
         }
 
+        var excludes = opts.excludes || [];
+        excludes.push('**/node_modules/**');
+
         istanbul.
             matcherFor({
                 root: projectRoot || process.cwd(),
                 includes: [ '**/*.js' ],
-                excludes: opts.excludes || ['**/node_modules/**']
+                excludes: excludes
             },
             function (err, matchFn) {
                 if (err) {
