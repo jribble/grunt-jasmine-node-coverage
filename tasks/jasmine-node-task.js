@@ -1,116 +1,203 @@
 module.exports = function (grunt) {
     'use strict';
+    var isVerbose;
 
-    grunt.registerTask("jasmine_node", "Runs jasmine-node.", function() {
-      var jasmine = require('jasmine-node');
-      var util;
-      // TODO: ditch this when grunt v0.4 is released
-      grunt.util = grunt.util || grunt.utils;
-      var Path = require('path');
-      var _ = grunt.util._;
+    var doCoverage = function (opts, projectRoot, runFn) {
+        var istanbul = require('istanbul'),
+            Path = require('path'),
+            mkdirp = require('mkdirp'),
+            fs = require('fs');
 
-      try {
-          util = require('util');
-      } catch(e) {
-          util = require('sys');
-      }
-
-      var projectRoot     = grunt.config("jasmine_node.projectRoot") || ".";
-      var specFolders     = grunt.config("jasmine_node.specFolders") || [];
-      var source          = grunt.config("jasmine_node.source") || "src";
-      var specNameMatcher = grunt.config("jasmine_node.specNameMatcher") || "spec";
-      var teamcity        = grunt.config("jasmine_node.teamcity") || false;
-      var useRequireJs    = grunt.config("jasmine_node.requirejs") || false;
-      var extensions      = grunt.config("jasmine_node.extensions") || "js";
-      var match           = grunt.config("jasmine_node.match") || ".";
-      var matchall        = grunt.config("jasmine_node.matchall") || false;
-      var autotest        = grunt.config("jasmine_node.autotest") || false;
-      var useHelpers      = grunt.config("jasmine_node.useHelpers") || false;
-      var forceExit       = grunt.config("jasmine_node.forceExit") || false;
-      var useCoffee       = grunt.config("jasmine_node.useCoffee") || false;
-
-      var isVerbose       = grunt.config("jasmine_node.verbose");
-      var showColors      = grunt.config("jasmine_node.colors");
-
-      if (projectRoot) {
-        specFolders.push(projectRoot);
-      }
-
-      if (_.isUndefined(isVerbose)) {
-        isVerbose = true;
-      }
-
-      if (_.isUndefined(showColors)) {
-        showColors = true;
-      }
-
-      var junitreport = {
-          report: false,
-          savePath : "./reports/",
-          useDotNotation: true,
-          consolidate: true
-      };
-
-      var jUnit = grunt.config("jasmine_node.jUnit") || junitreport;
-
-      // Tell grunt this task is asynchronous.
-      var done = this.async();
-
-      var regExpSpec = new RegExp(match + (matchall ? "" : specNameMatcher + "\\.") + "(" + extensions + ")$", 'i');
-      var onComplete = function(runner, log) {
-        var exitCode;
-        util.print('\n');
-        if (runner.results().failedCount === 0) {
-          exitCode = 0;
-        } else {
-          exitCode = 1;
-
-          if (forceExit) {
-            process.exit(exitCode);
-          }
+        // set up require hooks to instrument files as they are required
+        var DEFAULT_REPORT_FORMAT = 'lcov';
+        var Report = istanbul.Report;
+        var reports = [];
+        var reportingDir = Path.resolve(process.cwd(), 'coverage');
+        mkdirp.sync(reportingDir); //ensure we fail early if we cannot do this
+        var reportClassName = opts.report || DEFAULT_REPORT_FORMAT;
+        reports.push(Report.create(reportClassName, { dir: reportingDir }));
+        if (opts.print !== 'none') {
+            switch (opts.print) {
+                case 'detail':
+                    reports.push(Report.create('text'));
+                    break;
+                case 'both':
+                    reports.push(Report.create('text'));
+                    reports.push(Report.create('text-summary'));
+                    break;
+                default:
+                    reports.push(Report.create('text-summary'));
+                    break;
+            }
         }
 
-        done();
-      };
+        istanbul.
+            matcherFor({
+                root: projectRoot || process.cwd(),
+                includes: [ '**/*.js' ],
+                excludes: opts.excludes || ['**/node_modules/**']
+            },
+            function (err, matchFn) {
+                if (err) {
+                    return callback(err);
+                }
 
-      var options = {
-        match:           match,
-        matchall:        matchall,
-        specNameMatcher: specNameMatcher,
-        extensions:      extensions,
-        specFolders:     specFolders,
-        onComplete:      onComplete,
-        isVerbose:       isVerbose,
-        showColors:      showColors,
-        teamcity:        teamcity,
-        useRequireJs:    useRequireJs,
-        coffee:          useCoffee,
-        regExpSpec:      regExpSpec,
-        junitreport:     jUnit
-      };
+                var coverageVar = '$$cov_' + new Date().getTime() + '$$',
+                    instrumenter = new istanbul.Instrumenter({ coverageVariable: coverageVar }),
+                    transformer = instrumenter.instrumentSync.bind(instrumenter),
+                    hookOpts = { verbose: isVerbose };
 
+                istanbul.hook.hookRequire(matchFn, transformer, hookOpts);
 
-      // order is preserved in node.js
-      var legacyArguments = Object.keys(options).map(function(key) {
-        return options[key];
-      });
+                //initialize the global variable to stop mocha from complaining about leaks
+                global[coverageVar] = {};
 
-      if (useHelpers) {
-        jasmine.loadHelpersInFolder(projectRoot,
-        new RegExp("helpers?\\.(" + extensions + ")$", 'i'));
-      }
+                process.once('exit', function () {
+                    var file = Path.resolve(reportingDir, 'coverage.json'),
+                        collector,
+                        cov;
+                    if (typeof global[coverageVar] === 'undefined' || Object.keys(global[coverageVar]).length === 0) {
+                        console.error('No coverage information was collected, exit without writing coverage information');
+                        return;
+                    } else {
+                        cov = global[coverageVar];
+                    }
+                    //important: there is no event loop at this point
+                    //everything that happens in this exit handler MUST be synchronous
+                    mkdirp.sync(reportingDir); //yes, do this again since some test runners could clean the dir initially created
+                    if (opts.print !== 'none') {
+                        console.error('=============================================================================');
+                        console.error('Writing coverage object [' + file + ']');
+                    }
+                    fs.writeFileSync(file, JSON.stringify(cov), 'utf8');
+                    collector = new istanbul.Collector();
+                    collector.add(cov);
+                    if (opts.print !== 'none') {
+                        console.error('Writing coverage reports at [' + reportingDir + ']');
+                        console.error('=============================================================================');
+                    }
+                    reports.forEach(function (report) {
+                        report.writeReport(collector, true);
+                    });
+                    //return callback();
+                });
+                runFn();
+            });
 
-      try {
-        // for jasmine-node@1.0.27 individual arguments need to be passed
-        jasmine.executeSpecsInFolder.apply(this, legacyArguments);
-      }
-      catch (e) {
+    };
+
+    grunt.registerTask("jasmine_node", "Runs jasmine-node.", function () {
+        var jasmine = require('jasmine-node');
+        var util;
+        // TODO: ditch this when grunt v0.4 is released
+        grunt.util = grunt.util || grunt.utils;
+        var _ = grunt.util._;
+
         try {
-          // since jasmine-node@1.0.28 an options object need to be passed
-          jasmine.executeSpecsInFolder(options);
+            util = require('util');
         } catch (e) {
-          console.log('Failed to execute "jasmine.executeSpecsInFolder": ' + e.stack);
+            util = require('sys');
         }
-      }
+
+        var projectRoot = grunt.config("jasmine_node.projectRoot") || ".";
+        var specFolders = grunt.config("jasmine_node.specFolders") || [];
+        var forceExit = grunt.config("jasmine_node.options.forceExit") || false;
+        var match = grunt.config("jasmine_node.options.match") || '.';
+        var matchall = grunt.config("jasmine_node.options.matchall") || false;
+        var specNameMatcher = grunt.config("jasmine_node.options.specNameMatcher") || 'spec';
+        var extensions = grunt.config("jasmine_node.options.extensions") || 'js';
+        var useHelpers = grunt.config("jasmine_node.useHelpers") || false;
+
+
+        var coverage = grunt.config("jasmine_node.coverage") || false;
+
+        isVerbose = grunt.config("jasmine_node.verbose");
+        var showColors = grunt.config("jasmine_node.colors");
+
+        // Tell grunt this task is asynchronous.
+        var done = this.async();
+        var regExpSpec = new RegExp(match + (matchall ? "" : specNameMatcher + "\\.") + "(" + extensions + ")$", 'i');
+        var onComplete = function (runner, log) {
+            var exitCode;
+            util.print('\n');
+            if (runner.results().failedCount === 0) {
+                exitCode = 0;
+            } else {
+                exitCode = 1;
+            }
+
+            if (forceExit) {
+                process.exit(exitCode);
+            }
+            done();
+        };
+
+
+        var runFn = function () {
+
+
+            if (projectRoot) {
+                specFolders.push(projectRoot);
+            }
+
+            if (_.isUndefined(isVerbose)) {
+                isVerbose = true;
+            }
+
+            if (_.isUndefined(showColors)) {
+                showColors = true;
+            }
+
+
+            var options = {
+                specFolders: specFolders,
+                onComplete: onComplete,
+                isVerbose: isVerbose,
+                showColors: showColors,
+                teamcity: false,
+                useRequireJs: false,
+                regExpSpec: regExpSpec,
+                junitreport: {
+                    report: false,
+                    savePath: "./reports/",
+                    useDotNotation: true,
+                    consolidate: true
+                }
+            };
+
+
+            _.extend(options, grunt.config("jasmine_node.options") || {});
+
+
+            // order is preserved in node.js
+            var legacyArguments = Object.keys(options).map(function (key) {
+                return options[key];
+            });
+
+            if (useHelpers) {
+                jasmine.loadHelpersInFolder(projectRoot,
+                    new RegExp("helpers?\\.(" + extensions + ")$", 'i'));
+            }
+
+            try {
+                // for jasmine-node@1.0.27 individual arguments need to be passed
+                jasmine.executeSpecsInFolder.apply(this, legacyArguments);
+            }
+            catch (e) {
+                try {
+                    // since jasmine-node@1.0.28 an options object need to be passed
+                    jasmine.executeSpecsInFolder(options);
+                } catch (e) {
+                    console.log('Failed to execute "jasmine.executeSpecsInFolder": ' + e.stack);
+                }
+            }
+        };
+
+        if (coverage) {
+            doCoverage(coverage, projectRoot, runFn);
+        }
+        else {
+            runFn();
+        }
     });
 };

@@ -29,7 +29,9 @@
   "scripts" : {
   },
   "dependencies" : {
-    "jasmine-node": "*"
+    "jasmine-node": "*",
+    "istanbul": "0.1.22",
+    "mkdirp": "0.3.x"
   },
   "devDependencies" : {
     "grunt" : "~0.4.1",
@@ -43,6 +45,8 @@
     "builds",
     "ci",
     "jasmine",
-    "jasmine-node"
+    "jasmine-node",
+    "istabul",
+    "coverage"
   ]
 }

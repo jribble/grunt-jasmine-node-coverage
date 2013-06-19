@@ -20,13 +20,15 @@ module.exports = function (grunt) {
         all: ['tasks/**/*.js']
       },
       jasmine_node: {
+        coverage: {
+        },
         options: {
           forceExit: true,
           match: '.',
           matchall: false,
           extensions: 'js',
           specNameMatcher: 'spec',
-          jUnit: {
+          junitreport: {
             report: false,
             savePath : "./build/reports/jasmine/",
             useDotNotation: true,
