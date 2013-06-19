@@ -14,8 +14,10 @@ module.exports = function (grunt) {
         var reports = [];
         var reportingDir = Path.resolve(process.cwd(), 'coverage');
         mkdirp.sync(reportingDir); //ensure we fail early if we cannot do this
-        var reportClassName = opts.report || DEFAULT_REPORT_FORMAT;
-        reports.push(Report.create(reportClassName, { dir: reportingDir }));
+        var reportClassNames = opts.report || [DEFAULT_REPORT_FORMAT];
+        reportClassNames.forEach(function(reportClassName) {
+            reports.push(Report.create(reportClassName, { dir: reportingDir }));
+        });
         if (opts.print !== 'none') {
             switch (opts.print) {
                 case 'detail':
