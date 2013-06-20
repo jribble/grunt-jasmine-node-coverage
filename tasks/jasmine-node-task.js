@@ -12,7 +12,8 @@ module.exports = function (grunt) {
         var DEFAULT_REPORT_FORMAT = 'lcov';
         var Report = istanbul.Report;
         var reports = [];
-        var reportingDir = Path.resolve(process.cwd(), 'coverage');
+        var savePath = opts.savePath || 'coverage';
+        var reportingDir = Path.resolve(process.cwd(), savePath);
         mkdirp.sync(reportingDir); //ensure we fail early if we cannot do this
         var reportClassNames = opts.report || [DEFAULT_REPORT_FORMAT];
         reportClassNames.forEach(function(reportClassName) {
