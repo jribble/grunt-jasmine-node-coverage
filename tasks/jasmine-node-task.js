@@ -6,7 +6,8 @@ module.exports = function (grunt) {
         var istanbul = require('istanbul'),
             Path = require('path'),
             mkdirp = require('mkdirp'),
-            fs = require('fs');
+            fs = require('fs'),
+            glob = require('glob');
 
         // set up require hooks to instrument files as they are required
         var DEFAULT_REPORT_FORMAT = 'lcov';
@@ -77,7 +78,19 @@ module.exports = function (grunt) {
                     }
                     fs.writeFileSync(file, JSON.stringify(cov), 'utf8');
                     collector = new istanbul.Collector();
-                    collector.add(cov);
+                    if(opts.collect != null) {
+                        opts.collect.forEach(function(covPattern) {
+                            var coverageFiles = glob.sync(covPattern, null);
+                            coverageFiles.forEach(function(coverageFile) {
+                                var contents = fs.readFileSync(coverageFile, 'utf8');
+                                var fileCov = JSON.parse(contents);
+                                collector.add(fileCov);
+                            });
+                        })
+                    }
+                    else {
+                        collector.add(cov);
+                    }
                     if (opts.print !== 'none') {
                         console.error('Writing coverage reports at [' + reportingDir + ']');
                         console.error('=============================================================================');
@@ -135,7 +148,7 @@ module.exports = function (grunt) {
             if (forceExit) {
                 process.exit(exitCode);
             }
-            done();
+            done(exitCode == 0);
         };
 
 
