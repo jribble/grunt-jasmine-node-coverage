@@ -84,6 +84,18 @@ module.exports = function (grunt) {
                             coverageFiles.forEach(function(coverageFile) {
                                 var contents = fs.readFileSync(coverageFile, 'utf8');
                                 var fileCov = JSON.parse(contents);
+                                if(opts.relativize) {
+                                    var cwd = process.cwd();
+                                    var newFileCov = {};
+                                    for(var key in fileCov) {
+                                        var item = fileCov[key];
+                                        var path = item.path;
+                                        var relPath = Path.relative(cwd, path);
+                                        item.path = relPath;
+                                        newFileCov[relPath] = item;
+                                    }
+                                    fileCov = newFileCov;
+                                }
                                 collector.add(fileCov);
                             });
                         })
