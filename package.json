@@ -30,7 +30,8 @@
   "dependencies" : {
     "jasmine-node": "*",
     "istanbul": "0.1.22",
-    "mkdirp": "0.3.x"
+    "mkdirp": "0.3.x",
+    "glob": "*"
   },
   "devDependencies" : {
     "grunt" : "~0.4.1",
