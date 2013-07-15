@@ -1,7 +1,7 @@
 {
   "name" : "grunt-jasmine-node-coverage",
   "description" : "Grunt task for running jasmine-node using istanbul for code coverage reports. Based off of grunt-jasmine-node by Omar Gonzalez (s9tpepper).",
-  "version" : "0.1.4",
+  "version" : "0.1.5",
   "homepage" : "https://github.com/jribble/grunt-jasmine-node-coverage",
   "author" : {
     "name" : "Jarrod Ribble",
@@ -30,7 +30,8 @@
   "dependencies" : {
     "jasmine-node": "*",
     "istanbul": "0.1.22",
-    "mkdirp": "0.3.x"
+    "mkdirp": "0.3.x",
+    "glob": "~3.2.1"
   },
   "devDependencies" : {
     "grunt" : "~0.4.1",
