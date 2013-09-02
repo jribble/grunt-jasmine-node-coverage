@@ -2,22 +2,22 @@
   "name" : "grunt-jasmine-node-coverage",
   "description" : "Grunt task for running jasmine-node using istanbul for code coverage reports. Based off of grunt-jasmine-node by Omar Gonzalez (s9tpepper).",
   "version" : "0.1.6",
-  "homepage" : "https://github.com/jribble/grunt-jasmine-node-coverage",
+  "homepage" : "https://github.com/LudwigHoff/grunt-jasmine-node-coverage",
   "author" : {
     "name" : "Jarrod Ribble",
     "email" : "jarrod.ribble@gmail.com"
   },
   "repository" : {
     "type" : "git",
-    "url" : "git://github.com/jribble/grunt-jasmine-node-coverage.git"
+    "url" : "git://github.com/LudwigHoff/grunt-jasmine-node-coverage.git"
   },
   "bugs" : {
-    "url" : "https://github.com/jribble/grunt-jasmine-node-coverage/issues"
+    "url" : "https://github.com/LudwigHoff/grunt-jasmine-node-coverage/issues"
   },
   "licenses" : [
     {
       "type" : "MIT",
-      "url" : "https://github.com/jribble/grunt-jasmine-node-coverage/blob/master/LICENSE-MIT"
+      "url" : "https://github.com/LudwigHoff/grunt-jasmine-node-coverage/blob/master/LICENSE-MIT"
     }
   ],
   "main" : "grunt.js",
