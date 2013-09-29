@@ -138,6 +138,8 @@ module.exports = function (grunt) {
         var specNameMatcher = grunt.config("jasmine_node.options.specNameMatcher") || 'spec';
         var extensions = grunt.config("jasmine_node.options.extensions") || 'js';
         var useHelpers = grunt.config("jasmine_node.useHelpers") || false;
+        var report = grunt.config("jasmine_node.options.jUnit.report") || false;
+        var savePath = grunt.config("jasmine_node.options.jUnit.savePath") || "./reports/";
 
 
         var coverage = grunt.config("jasmine_node.coverage") || false;
@@ -189,8 +191,8 @@ module.exports = function (grunt) {
                 useRequireJs: false,
                 regExpSpec: regExpSpec,
                 junitreport: {
-                    report: false,
-                    savePath: "./reports/",
+                    report: report,
+                    savePath: savePath,
                     useDotNotation: true,
                     consolidate: true
                 }
