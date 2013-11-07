@@ -110,7 +110,23 @@ module.exports = function (grunt) {
                     reports.forEach(function (report) {
                         report.writeReport(collector, true);
                     });
-                    //return callback();
+                    
+                    // Check against thresholds
+                    collector.files().forEach(function (file) {
+                        var summary = istanbul.utils.summarizeFileCoverage(
+                            collector.fileCoverageFor(file));
+                        grunt.util._.each(opts.thresholds, function (threshold, metric) {
+                            var actual = summary[metric];
+                            if(!actual) {
+                                grunt.warn('unrecognized metric: ' + metric);
+                            }
+                            if(actual.pct < threshold) {
+                                grunt.warn('expected ' + metric + ' coverage to be at least '
+                                    + threshold + '% but was ' + actual.pct + '%' + '\n\tat (' + file + ')');
+                            }
+                        });
+                    });
+
                 });
                 runFn();
             });
