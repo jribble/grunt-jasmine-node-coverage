@@ -29,7 +29,7 @@
   },
   "dependencies" : {
     "jasmine-node": "*",
-    "istanbul": "0.1.22",
+    "istanbul": "~0.1.46",
     "mkdirp": "0.3.x",
     "glob": "~3.2.1"
   },
