@@ -218,17 +218,14 @@ module.exports = function (grunt) {
             _.extend(options, grunt.config("jasmine_node.options") || {});
 
             if (captureExceptions) {
-              // Grunt will kill the process when it handles an uncaughtException, so
-              // we need to insert a new handler before the Grunt handler to print
-              // out the error stack trace.
-              var handlers = process.listeners('uncaughtException');
+              // Grunt will kill the process when it handles an uncaughtException, so we need to
+              // remove their handler to allow the test suite to continue.
+              // A downside of this is that we ignore any other registered `ungaughtException`
+              // handlers.
               process.removeAllListeners('uncaughtException');
-              handlers.unshift(function(e) {
+              process.on('uncaughtException', function(e) {
                 grunt.log.error('Caught unhandled exception: ', e.toString());
                 grunt.log.error(e.stack);
-              })
-              handlers.forEach(function(handler) {
-                process.on('uncaughtException', handler);
               });
             }
 
