@@ -156,7 +156,7 @@ module.exports = function (grunt) {
         var useHelpers = grunt.config("jasmine_node.useHelpers") || false;
         var report = grunt.config("jasmine_node.options.jUnit.report") || false;
         var savePath = grunt.config("jasmine_node.options.jUnit.savePath") || "./reports/";
-
+        var captureExceptions = grunt.config("jasmine_node.options.captureExceptions") || false;
 
         var coverage = grunt.config("jasmine_node.coverage") || false;
 
@@ -217,6 +217,17 @@ module.exports = function (grunt) {
 
             _.extend(options, grunt.config("jasmine_node.options") || {});
 
+            if (captureExceptions) {
+              // Grunt will kill the process when it handles an uncaughtException, so we need to
+              // remove their handler to allow the test suite to continue.
+              // A downside of this is that we ignore any other registered `ungaughtException`
+              // handlers.
+              process.removeAllListeners('uncaughtException');
+              process.on('uncaughtException', function(e) {
+                grunt.log.error('Caught unhandled exception: ', e.toString());
+                grunt.log.error(e.stack);
+              });
+            }
 
             // order is preserved in node.js
             var legacyArguments = Object.keys(options).map(function (key) {
