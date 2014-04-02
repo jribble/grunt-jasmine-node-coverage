@@ -201,7 +201,7 @@ module.exports = function (grunt) {
             var options = {
                 specFolders: specFolders,
                 onComplete: onComplete,
-                verbose: isVerbose,
+                isVerbose: isVerbose,
                 showColors: showColors,
                 teamcity: false,
                 useRequireJs: false,
