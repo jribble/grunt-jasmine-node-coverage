@@ -248,6 +248,11 @@ module.exports = function (grunt) {
                     // since jasmine-node@1.0.28 an options object need to be passed
                     jasmine.executeSpecsInFolder(options);
                 } catch (e) {
+                    if (forceExit) {
+                        process.exit(1);
+                    } else {
+                        done(1);
+                    }
                     console.log('Failed to execute "jasmine.executeSpecsInFolder": ' + e.stack);
                 }
             }
