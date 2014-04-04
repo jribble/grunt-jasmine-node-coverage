@@ -46,7 +46,8 @@ module.exports = function (grunt) {
             },
             function (err, matchFn) {
                 if (err) {
-                    return callback(err);
+                    grunt.warn(err);
+                    return;
                 }
 
                 var coverageVar = '$$cov_' + new Date().getTime() + '$$',
@@ -98,7 +99,7 @@ module.exports = function (grunt) {
                                 }
                                 collector.add(fileCov);
                             });
-                        })
+                        });
                     }
                     else {
                         collector.add(cov);
@@ -110,7 +111,7 @@ module.exports = function (grunt) {
                     reports.forEach(function (report) {
                         report.writeReport(collector, true);
                     });
-                    
+
                     // Check against thresholds
                     collector.files().forEach(function (file) {
                         var summary = istanbul.utils.summarizeFileCoverage(
@@ -121,8 +122,7 @@ module.exports = function (grunt) {
                                 grunt.warn('unrecognized metric: ' + metric);
                             }
                             if(actual.pct < threshold) {
-                                grunt.warn('expected ' + metric + ' coverage to be at least '
-                                    + threshold + '% but was ' + actual.pct + '%' + '\n\tat (' + file + ')');
+                                grunt.warn('expected ' + metric + ' coverage to be at least ' + threshold + '% but was ' + actual.pct + '%' + '\n\tat (' + file + ')');
                             }
                         });
                     });
@@ -178,7 +178,7 @@ module.exports = function (grunt) {
             if (forceExit) {
                 process.exit(exitCode);
             }
-            done(exitCode == 0);
+            done(exitCode === 0);
         };
 
 
