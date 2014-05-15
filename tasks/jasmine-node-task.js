@@ -146,22 +146,24 @@ module.exports = function (grunt) {
             util = require('sys');
         }
 
-        var projectRoot = grunt.config("jasmine_node.projectRoot") || ".";
-        var specFolders = grunt.config("jasmine_node.specFolders");
-        var forceExit = grunt.config("jasmine_node.options.forceExit") || false;
-        var match = grunt.config("jasmine_node.options.match") || '.';
-        var matchall = grunt.config("jasmine_node.options.matchall") || false;
-        var specNameMatcher = grunt.config("jasmine_node.options.specNameMatcher") || 'spec';
-        var extensions = grunt.config("jasmine_node.options.extensions") || 'js';
-        var useHelpers = grunt.config("jasmine_node.useHelpers") || false;
-        var report = grunt.config("jasmine_node.options.jUnit.report") || false;
-        var savePath = grunt.config("jasmine_node.options.jUnit.savePath") || "./reports/";
-        var captureExceptions = grunt.config("jasmine_node.options.captureExceptions") || false;
+        var self = this;
 
-        var coverage = grunt.config("jasmine_node.coverage") || false;
+        var projectRoot = grunt.config(this.name + ".projectRoot") || ".";
+        var specFolders = grunt.config(this.name + ".specFolders");
+        var forceExit = grunt.config(this.name + ".options.forceExit") || false;
+        var match = grunt.config(this.name + ".options.match") || '.';
+        var matchall = grunt.config(this.name + ".options.matchall") || false;
+        var specNameMatcher = grunt.config(this.name + ".options.specNameMatcher") || 'spec';
+        var extensions = grunt.config(this.name + ".options.extensions") || 'js';
+        var useHelpers = grunt.config(this.name + ".useHelpers") || false;
+        var report = grunt.config(this.name + ".options.jUnit.report") || false;
+        var savePath = grunt.config(this.name + ".options.jUnit.savePath") || "./reports/";
+        var captureExceptions = grunt.config(this.name + ".options.captureExceptions") || false;
 
-        isVerbose = grunt.config("jasmine_node.verbose");
-        var showColors = grunt.config("jasmine_node.colors");
+        var coverage = grunt.config(this.name + ".coverage") || false;
+
+        isVerbose = grunt.config(this.name + ".verbose");
+        var showColors = grunt.config(this.name + ".colors");
 
         // Tell grunt this task is asynchronous.
         var done = this.async();
@@ -215,7 +217,7 @@ module.exports = function (grunt) {
             };
 
 
-            _.extend(options, grunt.config("jasmine_node.options") || {});
+            _.extend(options, grunt.config(self.name + ".options") || {});
 
             if (captureExceptions) {
               // Grunt will kill the process when it handles an uncaughtException, so we need to
