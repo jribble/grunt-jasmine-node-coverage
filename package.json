@@ -26,15 +26,16 @@
     "node" : ">=0.8.0"
   },
   "scripts" : {
+    "test": "grunt test"
   },
   "dependencies" : {
-    "jasmine-node": "*",
-    "istanbul": "~0.1.46",
-    "mkdirp": "0.3.x",
-    "glob": "~3.2.1"
+    "jasmine-node": ">=1.4.0",
+    "istanbul": "~0.3",
+    "mkdirp": "~0.5",
+    "glob": "~4.0"
   },
   "devDependencies" : {
-    "grunt" : "~0.4.1",
+    "grunt" : "~0.4",
     "jasmine-node": ">=1.4.0",
     "grunt-contrib-jshint": "~0.10"
   },
