@@ -10,10 +10,11 @@ Then add this line to your project's `grunt.js` grunt file:
 ```javascript
 grunt.initConfig({
   jasmine_node: {
-    coverage: {
-
-    },
     options: {
+      coverage: {
+        print: '',
+        collect: [...]
+      },
       forceExit: true,
       match: '.',
       matchall: false,
@@ -44,6 +45,9 @@ Help us squash them by submitting an issue that describes how you encountered it
 see [GitHub Repository](/jribble/grunt-jasmine-node-coverage).
 
 ## License
+
 Copyright (c) 2013 "jribble" Jarrod Ribble & contributors.
-Based on grunt-jasmine-node (https://github.com/jasmine-contrib/grunt-jasmine-node) Copyright (c) 2012 "s9tpepper" Omar Gonzalez & contributors.
+Based on grunt-jasmine-node (https://github.com/jasmine-contrib/grunt-jasmine-node)
+
+Copyright (c) 2012 "s9tpepper" Omar Gonzalez & contributors.
 Licensed under the MIT license.

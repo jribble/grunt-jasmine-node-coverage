@@ -9,8 +9,8 @@ module.exports = function (grunt) {
       all: ['tasks/**/*.js']
     },
     jasmine_node: {
-      coverage: {},
       options: {
+        coverage: {},
         forceExit: true,
         match: '.',
         matchall: false,
