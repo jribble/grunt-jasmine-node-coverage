@@ -30,8 +30,7 @@
   },
   "dependencies" : {
     "jasmine-node": ">=1.4.0",
-    "istanbul": "~0.3",
-    "glob": "~4.0"
+    "istanbul": "~0.3"
   },
   "devDependencies" : {
     "grunt" : "~0.4",

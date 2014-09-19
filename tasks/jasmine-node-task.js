@@ -4,8 +4,7 @@ module.exports = function (grunt) {
 
   var istanbul = require('istanbul'),
     Path = require('path'),
-    fs = require('fs'),
-    glob = require('glob');
+    fs = require('fs');
 
   var reportingDir = Path.resolve(process.cwd(), 'coverage'),
     coverageVar = '$$cov_' + new Date().getTime() + '$$',
@@ -34,7 +33,7 @@ module.exports = function (grunt) {
     collector = new istanbul.Collector();
     if (coverageOpts.collect != null) {
       coverageOpts.collect.forEach(function (covPattern) {
-        var coverageFiles = glob.sync(covPattern, null);
+        var coverageFiles = grunt.file.expand(covPattern);
         coverageFiles.forEach(function (coverageFile) {
           var contents = fs.readFileSync(coverageFile, 'utf8');
           var fileCov = JSON.parse(contents);
