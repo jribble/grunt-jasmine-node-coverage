@@ -149,7 +149,7 @@ module.exports = function (grunt) {
 
   };
 
-  grunt.registerTask('jasmine_node', 'Runs jasmine-node.', function () {
+  grunt.registerMultiTask('jasmine_node', 'Runs jasmine-node.', function () {
 
     var _ = grunt.util._;
 
@@ -176,7 +176,7 @@ module.exports = function (grunt) {
       specNameMatcher: 'spec', // string, filename expression
       extensions: 'js', // string, used in regular expressions after dot, inside (), thus | could be used
       captureExceptions: false, // boolean
-      jUnit: { // FIXME: also 'junitreport' used, which one is correct?
+      junitreport: {
         report: false,
         savePath: './reports/',
         useDotNotation: true,
