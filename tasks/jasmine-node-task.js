@@ -7,10 +7,11 @@ module.exports = function (grunt) {
     path = require('path'),
     fs = require('fs');
 
-  var reportingDir = path.resolve(process.cwd(), 'coverage'),
+  var reportingDir,
     coverageVar = '$$cov_' + new Date().getTime() + '$$',
     fileSrc = ['**/*.js'],
     options,
+    done,
     reports = [];
 
   var coverageCollect = function (covPattern, collector) {
@@ -36,46 +37,7 @@ module.exports = function (grunt) {
     });
   };
 
-  var exitHandler = function () {
-    var file = path.resolve(reportingDir, options.coverage.reportFile),
-      collector,
-      cov;
-
-    if (typeof global[coverageVar] === 'undefined' || Object.keys(global[coverageVar]).length === 0) {
-      console.error('No coverage information was collected, exit without writing coverage information');
-      return;
-    }
-    else {
-      cov = global[coverageVar];
-    }
-
-    //important: there is no event loop at this point
-    //everything that happens in this exit handler MUST be synchronous
-    grunt.file.mkdir(reportingDir); //yes, do this again since some test runners could clean the dir initially created
-    if (options.coverage.print !== 'none') {
-      console.error('=============================================================================');
-      console.error('Writing coverage object [' + file + ']');
-    }
-    fs.writeFileSync(file, JSON.stringify(cov), 'utf8');
-    collector = new istanbul.Collector();
-
-    if (options.coverage.collect !== false) {
-      options.coverage.collect.forEach(function (covPattern) {
-        coverageCollect(covPattern, collector);
-      });
-    }
-    else {
-      collector.add(cov);
-    }
-
-    if (options.coverage.print !== 'none') {
-      console.error('Writing coverage reports at [' + reportingDir + ']');
-      console.error('=============================================================================');
-    }
-
-    reports.forEach(function (report) {
-      report.writeReport(collector, true);
-    });
+  var coverageThresholdCheck = function (collector) {
 
     // Check against thresholds
     collector.files().forEach(function (file) {
@@ -91,10 +53,54 @@ module.exports = function (grunt) {
         }
         if (actual.pct < threshold) {
           grunt.warn('expected ' + metric + ' coverage to be at least ' + threshold +
-            '% but was ' + actual.pct + '%' + '\n\tat (' + file + ')');
+          '% but was ' + actual.pct + '%' + '\n\tat (' + file + ')');
         }
       });
     });
+  };
+
+  var exitHandler = function () {
+    var reportFile = path.resolve(reportingDir, options.coverage.reportFile),
+      collector,
+      cov;
+
+    if (typeof global[coverageVar] !== 'object' || Object.keys(global[coverageVar]).length === 0) {
+      grunt.log.error('No coverage information was collected, exit without writing coverage information');
+      return;
+    }
+    else {
+      cov = global[coverageVar];
+    }
+
+    //important: there is no event loop at this point
+    //everything that happens in this exit handler MUST be synchronous
+    grunt.file.mkdir(reportingDir); //yes, do this again since some test runners could clean the dir initially created
+    if (options.coverage.print !== 'none') {
+      grunt.log.writeln('=============================================================================');
+      grunt.log.writeln('Writing coverage object [' + reportFile + ']');
+    }
+    fs.writeFileSync(reportFile, JSON.stringify(cov), 'utf8');
+    collector = new istanbul.Collector();
+
+    if (options.coverage.collect !== false) {
+      options.coverage.collect.forEach(function (covPattern) {
+        coverageCollect(covPattern, collector);
+      });
+    }
+    else {
+      collector.add(cov);
+    }
+
+    if (options.coverage.print !== 'none') {
+      grunt.log.writeln('Writing coverage reports at [' + reportingDir + ']');
+      grunt.log.writeln('=============================================================================');
+    }
+
+    reports.forEach(function (report) {
+      report.writeReport(collector, true);
+    });
+
+    coverageThresholdCheck(collector);
 
   };
 
@@ -112,13 +118,50 @@ module.exports = function (grunt) {
     process.once('exit', exitHandler);
   };
 
-  var doCoverage = function (projectRoot, runFn) {
+
+  var runner = function () {
+
+
+    if (options.captureExceptions) {
+      // Grunt will kill the process when it handles an uncaughtException, so we need to
+      // remove their handler to allow the test suite to continue.
+      // A downside of this is that we ignore any other registered `ungaughtException`
+      // handlers.
+      process.removeAllListeners('uncaughtException');
+      process.on('uncaughtException', function (e) {
+        grunt.log.error('Caught unhandled exception: ', e.toString());
+        grunt.log.error(e.stack);
+      });
+    }
+
+    if (options.useHelpers) {
+      jasmine.loadHelpersInFolder(
+        options.projectRoot,
+        new RegExp('helpers?\\.(' + options.extensions + ')$', 'i')
+      );
+    }
+
+    try {
+      jasmine.executeSpecsInFolder(options);
+    }
+    catch (e) {
+      if (options.forceExit) {
+        process.exit(1);
+      }
+      else {
+        done(1);
+      }
+      grunt.log.error('Failed to execute "jasmine.executeSpecsInFolder": ' + e.stack);
+    }
+  };
+
+  var doCoverage = function () {
 
     // set up require hooks to instrument files as they are required
     var Report = istanbul.Report;
 
-    reportingDir = path.resolve(process.cwd(), options.coverage.savePath);
     grunt.file.mkdir(reportingDir); //ensure we fail early if we cannot do this
+
     var reportClassNames = options.coverage.report;
     reportClassNames.forEach(function (reportClassName) {
       reports.push(Report.create(reportClassName, {dir: reportingDir}));
@@ -143,7 +186,7 @@ module.exports = function (grunt) {
     excludes.push('**/node_modules/**');
 
     istanbul.matcherFor({
-      root: projectRoot || process.cwd(),
+      root: options.projectRoot,
       includes: fileSrc,
       excludes: excludes
     }, function (err, matchFn) {
@@ -152,14 +195,12 @@ module.exports = function (grunt) {
         return;
       }
       istanbulMatcherRun(matchFn);
-      runFn();
+      runner();
     });
 
   };
 
   grunt.registerMultiTask('jasmine_node', 'Runs jasmine-node with Istanbul code coverage', function () {
-
-    var self = this;
 
     // Default options. Once Grunt does recursive merge, use that, maybe 0.4.6
     options = merge({
@@ -190,14 +231,14 @@ module.exports = function (grunt) {
           lines: 0,
           functions: 0
         },
-        savePath: 'coverage',
+        reportDir: 'coverage',
         report: [
           'lcov'
         ]
       },
 
       // jasmine-node specific options
-      specFolders: null, // array,
+      specFolders: null, // array
       onComplete: null, // function
       isVerbose: true, // boolean
       showColors: false, // boolean
@@ -218,9 +259,10 @@ module.exports = function (grunt) {
 
 
     fileSrc = this.filesSrc || fileSrc;
+    reportingDir = path.resolve(process.cwd(), options.coverage.reportDir);
 
     // Tell grunt this task is asynchronous.
-    var done = this.async();
+    done = this.async();
 
     // Default value in jasmine-node is new RegExp(".(js)$", "i")
     if (options.regExpSpec !== null) {
@@ -229,13 +271,10 @@ module.exports = function (grunt) {
     }
     if (typeof options.onComplete !== 'function') {
       options.onComplete = function (runner, log) {
-        var exitCode;
+        var exitCode = 1;
         grunt.log.write('\n');
         if (runner.results().failedCount === 0) {
           exitCode = 0;
-        }
-        else {
-          exitCode = 1;
         }
 
         if (options.forceExit) {
@@ -245,52 +284,15 @@ module.exports = function (grunt) {
       };
     }
 
-    var runFn = function () {
-
-      if (options.specFolders === null) {
-        options.specFolders = [options.projectRoot];
-      }
-
-      if (options.captureExceptions) {
-        // Grunt will kill the process when it handles an uncaughtException, so we need to
-        // remove their handler to allow the test suite to continue.
-        // A downside of this is that we ignore any other registered `ungaughtException`
-        // handlers.
-        process.removeAllListeners('uncaughtException');
-        process.on('uncaughtException', function (e) {
-          grunt.log.error('Caught unhandled exception: ', e.toString());
-          grunt.log.error(e.stack);
-        });
-      }
-
-      if (options.useHelpers) {
-        jasmine.loadHelpersInFolder(
-          options.projectRoot,
-          new RegExp('helpers?\\.(' + options.extensions + ')$', 'i')
-        );
-      }
-
-      try {
-        // since jasmine-node@1.0.28 an options object need to be passed
-        jasmine.executeSpecsInFolder(options);
-      }
-      catch (e) {
-        if (options.forceExit) {
-          process.exit(1);
-        }
-        else {
-          done(1);
-        }
-        console.log('Failed to execute "jasmine.executeSpecsInFolder": ' + e.stack);
-      }
-
-    };
+    if (options.specFolders === null) {
+      options.specFolders = [options.projectRoot];
+    }
 
     if (options.coverage !== false) {
-      doCoverage(options.projectRoot, runFn);
+      doCoverage();
     }
     else {
-      runFn();
+      runner();
     }
   });
 };

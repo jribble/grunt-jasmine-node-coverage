@@ -15,6 +15,7 @@ module.exports = function (grunt) {
           forceExit: true,
           match: '.',
           matchall: false,
+          specFolders: ['spec'],
           extensions: 'js',
           specNameMatcher: 'spec',
           junitreport: {
