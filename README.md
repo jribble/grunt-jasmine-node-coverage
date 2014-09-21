@@ -1,32 +1,45 @@
 # grunt-jasmine-node-coverage
 
-A grunt.js task to run your jasmine feature suite using jasmine-node and istanbul for code coverage reports.
+> Runs jasmine-node with Istanbul code coverage
+
+A Grunt task to run your Jasmine feature suite using jasmine-node and istanbul for code coverage reports.
 
 ## Getting Started
-Install this grunt plugin next to your project's grunt.js gruntfile with: `npm install grunt-jasmine-node-coverage`
 
-Then add this line to your project's `grunt.js` grunt file:
+Install this grunt plugin next to your project's `Gruntfile.js` with: `npm install grunt-jasmine-node-coverage`
+
+Then add these lines to your project's `Gruntfile.js` configuration file:
 
 ```javascript
 grunt.initConfig({
   jasmine_node: {
-    options: {
-      coverage: {
-        print: '',
-        collect: [...]
+    task_name: {
+      options: {
+        coverage: {
+          verbose,
+          instrumentation,
+          reporting,
+          hooks,
+
+          print: '',
+          relativize: false,
+          collect: [...],
+          thresholds: [...]
+        },
+        forceExit: true,
+        match: '.',
+        matchall: false,
+        extensions: 'js',
+        specNameMatcher: 'spec',
+        captureExceptions: true,
+        junitreport: {
+          report: false,
+          savePath : "./build/reports/jasmine/",
+          useDotNotation: true,
+          consolidate: true
+        }
       },
-      forceExit: true,
-      match: '.',
-      matchall: false,
-      extensions: 'js',
-      specNameMatcher: 'spec',
-      captureExceptions: true,
-      junitreport: {
-        report: false,
-        savePath : "./build/reports/jasmine/",
-        useDotNotation: true,
-        consolidate: true
-      }
+      src: ['**/*.js']
     }
   }
 });
@@ -43,7 +56,7 @@ form, thus wrapping each configuration in an object inside the `jasmine_node` ro
 
 ### Task configuration options
 
-https://github.com/mhevery/jasmine-node
+Most of the options are passed throught to [jasmine-node][].
 
 
 #### options.projectRoot
@@ -72,19 +85,44 @@ Type: `boolean|object`
 
 Default: `false`
 
-Istanbul specific configuration.
+Istanbul specific configuration. Use empty object,
+`{}` to use the defaults that are shown below.
 
-#### options.colors: false, // boolean, also 'showColors' used, which is correct?
+```js
+{
+  reportFile: 'coverage.json',
+  print: 'detail', // none, detail, both
+  relativize: true,
+  thresholds: {
+    statements: 0,
+    branches: 0,
+    lines: 0,
+    functions: 0
+  },
+  savePath: 'coverage',
+  report: [
+    'lcov'
+  ],
+  collect: [ // false to disable
+    'coverage/*coverage.json'
+  ]
+}
+```
+
+#### options.showColors
 
 Type: `boolean`
 
 Default: `false`
 
-#### options.verbose: , // boolean, also 'isVerbose' used, which is correct?
+#### options.isVerbose
 
 Type: `boolean`
 
 Default: `true`
+
+When `true` and `options.teamcity` is `false`, will use
+`TerminalVerboseReporter`, else `TerminalReporter`.
 
 #### options.forceExit
 
@@ -143,12 +181,62 @@ Default: `false`
 }
 ```
 
-#### options.teamcity: false, // boolean
-#### options.useRequireJs: false, // boolean
+#### options.teamcity
+
+Type: `boolean`
+
+Default: `false`
+
+If `true`, will be using `TeamcityReporter` instead of possible `isVerbose` option
+
+
+#### options.growl
+
+Type: `boolean`
+
+Default: `false`
+
+When `true` will be adding `GrowlReporter`.
+
+#### options.useRequireJs
+
+Type: `boolean`
+
+Default: `false`
+
+#### options.onComplete
+
+Type: `function`
+
+Default: `null`
+
+Will be called on Terminal and Teamcity reporters and on RequireJs runner.
+
+
+#### options.includeStackTrace
+
+Type: `boolean`
+
+Default: `false`
+
+Used only in `TerminalReporter`.
+
+#### options.coffee
+
+Type: `boolean`
+
+Default: `false`
+
+Seems to be currently (1.4.3) only supported in the command line options of jasmine-node.
 
 ## Bugs
 
-Help us squash them by submitting an issue that describes how you encountered it; please be as specific as possible including operating system, node, grunt, and grunt-jasmine-node-coverage versions.
+Help us to squash them by submitting an issue that describes how you encountered it;
+please be as specific as possible including operating system, node, grunt, and grunt-jasmine-node-coverage versions.
+
+```sh
+npm --versions
+```
 
 ## Release History
 
@@ -161,3 +249,5 @@ Based on grunt-jasmine-node (https://github.com/jasmine-contrib/grunt-jasmine-no
 
 Copyright (c) 2012 "s9tpepper" Omar Gonzalez & contributors.
 Licensed under the MIT license.
+
+[jasmine-node]: https://github.com/mhevery/jasmine-node "Integration of Jasmine Spec framework with Node.js"

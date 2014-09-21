@@ -6,24 +6,26 @@ module.exports = function (grunt) {
       options: {
         jshintrc: '.jshintrc'
       },
-      all: ['tasks/**/*.js']
+      all: ['tasks/*.js']
     },
     jasmine_node: {
-      options: {
-        coverage: {},
-        forceExit: true,
-        match: '.',
-        matchall: false,
-        extensions: 'js',
-        specNameMatcher: 'spec',
-        junitreport: {
-          report: false,
-          savePath: "./build/reports/jasmine/",
-          useDotNotation: true,
-          consolidate: true
-        }
-      },
-      all: ['spec/']
+      all: {
+        options: {
+          coverage: {},
+          forceExit: true,
+          match: '.',
+          matchall: false,
+          extensions: 'js',
+          specNameMatcher: 'spec',
+          junitreport: {
+            report: false,
+            savePath: './build/reports/jasmine/',
+            useDotNotation: true,
+            consolidate: true
+          }
+        },
+        src: ['tasks/*.js']
+      }
     }
   });
 
