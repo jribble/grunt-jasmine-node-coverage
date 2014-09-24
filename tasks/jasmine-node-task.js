@@ -68,9 +68,8 @@ module.exports = function (grunt) {
       grunt.log.error('No coverage information was collected, exit without writing coverage information');
       return;
     }
-    else {
-      cov = global[coverageVar];
-    }
+
+    cov = global[coverageVar];
 
     //important: there is no event loop at this point
     //everything that happens in this exit handler MUST be synchronous
@@ -176,6 +175,7 @@ module.exports = function (grunt) {
           reports.push(Report.create('text'));
           reports.push(Report.create('text-summary'));
           break;
+        case 'summary':
         default:
           reports.push(Report.create('text-summary'));
           break;
@@ -205,11 +205,9 @@ module.exports = function (grunt) {
     // Default options. Once Grunt does recursive merge, use that, maybe 0.4.6
     options = merge({
 
-      // Originally directly in config root
+      // Used only in this plugin, thus can be refactored out
       projectRoot: '.', // string
       useHelpers: false, // boolean
-
-      // Originally under 'options'
       forceExit: false, // boolean, exit on failure
       match: '.', // string, used in the beginning of regular expression
       matchall: false, // boolean, if false, the specNameMatcher is used, true will just be ''
@@ -220,7 +218,7 @@ module.exports = function (grunt) {
       // Coverage options
       coverage: { // boolean|object
         reportFile: 'coverage.json',
-        print: 'summary', // none, detail, both
+        print: 'summary', // none, summary, detail, both
         collect: [
           'coverage/coverage*.json'
         ], // coverage report file matching patters

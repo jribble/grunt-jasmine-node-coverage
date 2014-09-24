@@ -15,26 +15,17 @@ grunt.initConfig({
   jasmine_node: {
     task_name: {
       options: {
-        coverage: {
-          verbose,
-          instrumentation,
-          reporting,
-          hooks,
-
-          print: '',
-          relativize: false,
-          collect: [...],
-          thresholds: [...]
-        },
+        coverage: {},
         forceExit: true,
         match: '.',
         matchall: false,
+        specFolders: ['tests'],
         extensions: 'js',
         specNameMatcher: 'spec',
         captureExceptions: true,
         junitreport: {
           report: false,
-          savePath : "./build/reports/jasmine/",
+          savePath : './build/reports/jasmine/',
           useDotNotation: true,
           consolidate: true
         }
@@ -91,7 +82,7 @@ Istanbul specific configuration. Use empty object,
 ```js
 {
   reportFile: 'coverage.json',
-  print: 'detail', // none, detail, both
+  print: 'summary', // none, summary, detail, both
   relativize: true,
   thresholds: {
     statements: 0,
