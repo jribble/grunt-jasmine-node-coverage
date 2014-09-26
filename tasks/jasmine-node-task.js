@@ -176,7 +176,6 @@ module.exports = function (grunt) {
           reports.push(Report.create('text-summary'));
           break;
         case 'summary':
-        default:
           reports.push(Report.create('text-summary'));
           break;
       }
@@ -206,7 +205,7 @@ module.exports = function (grunt) {
     options = merge({
 
       // Used only in this plugin, thus can be refactored out
-      projectRoot: '.', // string
+      projectRoot: process.cwd(), // string
       useHelpers: false, // boolean
       forceExit: false, // boolean, exit on failure
       match: '.', // string, used in the beginning of regular expression
@@ -238,7 +237,7 @@ module.exports = function (grunt) {
       // jasmine-node specific options
       specFolders: null, // array
       onComplete: null, // function
-      isVerbose: true, // boolean
+      isVerbose: true, // boolean, TODO: start using grunt.verbose
       showColors: false, // boolean
       teamcity: false, // boolean
       useRequireJs: false, // boolean
@@ -262,11 +261,21 @@ module.exports = function (grunt) {
     // Tell grunt this task is asynchronous.
     done = this.async();
 
-    // Default value in jasmine-node is new RegExp(".(js)$", "i")
-    if (options.regExpSpec !== null) {
-      options.regExpSpec = new RegExp(options.match + (options.matchall ? '' :
+    if (options.specFolders === null) {
+      options.specFolders = [options.projectRoot];
+    }
+
+    // Default value in jasmine-node is 'new RegExp(".(js)$", "i")'
+    if (options.regExpSpec === null) {
+      options.regExpSpec = new RegExp('(' +
+        options.specFolders.join('|').replace(/\//g, '\\/') + ')' +
+        options.match + (options.matchall ? '.' :
         options.specNameMatcher + '\\.') + '(' + options.extensions + ')$', 'i');
     }
+
+    console.log('options.regExpSpec');
+    console.log(options.regExpSpec);
+
     if (typeof options.onComplete !== 'function') {
       options.onComplete = function (runner, log) {
         var exitCode = 1;
@@ -282,9 +291,6 @@ module.exports = function (grunt) {
       };
     }
 
-    if (options.specFolders === null) {
-      options.specFolders = [options.projectRoot];
-    }
 
     if (options.coverage !== false) {
       doCoverage();

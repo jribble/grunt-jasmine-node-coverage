@@ -10,20 +10,18 @@ module.exports = function (grunt) {
     },
     jasmine_node: {
       all: {
+
         options: {
           coverage: {},
+          isVerbose: true,
+          showColors: true,
+
           forceExit: true,
           match: '.',
           matchall: false,
           specFolders: ['spec'],
           extensions: 'js',
-          specNameMatcher: 'spec',
-          junitreport: {
-            report: false,
-            savePath: './build/reports/jasmine/',
-            useDotNotation: true,
-            consolidate: true
-          }
+          specNameMatcher: 'spec'
         },
         src: ['tasks/*.js']
       }

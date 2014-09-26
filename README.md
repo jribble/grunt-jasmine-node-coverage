@@ -54,15 +54,17 @@ Most of the options are passed throught to [jasmine-node][].
 
 Type: `string`
 
-Default: `'.'`
+Default: `process.cwd()`
+
+See http://nodejs.org/api/process.html#process_process_cwd
 
 #### options.specFolders
 
 Type: `array`
 
-Default: `null`
+Default: `[options.projectRoot]`
 
-Currently not in use...
+List of folders in which any specs are looked for.
 
 #### options.useHelpers
 
