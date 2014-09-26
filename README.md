@@ -98,9 +98,12 @@ Istanbul specific configuration. Use empty object,
   ],
   collect: [ // false to disable
     'coverage/*coverage.json'
-  ]
+  ],
+  excludes: []
 }
 ```
+
+Please note that `excludes` will always contain `'**/node_modules/**'`.
 
 #### options.showColors
 

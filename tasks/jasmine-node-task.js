@@ -59,17 +59,10 @@ module.exports = function (grunt) {
     });
   };
 
-  var exitHandler = function () {
+  var collectReports = function () {
     var reportFile = path.resolve(reportingDir, options.coverage.reportFile),
-      collector,
-      cov;
-
-    if (typeof global[coverageVar] !== 'object' || Object.keys(global[coverageVar]).length === 0) {
-      grunt.log.error('No coverage information was collected, exit without writing coverage information');
-      return;
-    }
-
-    cov = global[coverageVar];
+      collector = new istanbul.Collector(),
+      cov = global[coverageVar];
 
     //important: there is no event loop at this point
     //everything that happens in this exit handler MUST be synchronous
@@ -79,7 +72,6 @@ module.exports = function (grunt) {
       grunt.log.writeln('Writing coverage object [' + reportFile + ']');
     }
     fs.writeFileSync(reportFile, JSON.stringify(cov), 'utf8');
-    collector = new istanbul.Collector();
 
     if (options.coverage.collect !== false) {
       options.coverage.collect.forEach(function (covPattern) {
@@ -100,7 +92,18 @@ module.exports = function (grunt) {
     });
 
     coverageThresholdCheck(collector);
+  };
 
+  var exitHandler = function () {
+
+    grunt.log.writeln('typeof global[' + coverageVar + ']: ' + (typeof global[coverageVar]));
+    grunt.log.writeln(Object.keys(global[coverageVar]));
+
+    if (typeof global[coverageVar] !== 'object' || Object.keys(global[coverageVar]).length === 0) {
+      grunt.log.error('No coverage information was collected, exit without writing coverage information');
+      return;
+    }
+    collectReports();
   };
 
   var istanbulMatcherRun = function (matchFn) {
@@ -119,7 +122,6 @@ module.exports = function (grunt) {
 
 
   var runner = function () {
-
 
     if (options.captureExceptions) {
       // Grunt will kill the process when it handles an uncaughtException, so we need to
@@ -166,6 +168,8 @@ module.exports = function (grunt) {
       reports.push(Report.create(reportClassName, {dir: reportingDir}));
     });
 
+    grunt.log.writeln('options.coverage.print: ' + options.coverage.print);
+
     if (options.coverage.print !== 'none') {
       switch (options.coverage.print) {
         case 'detail':
@@ -190,6 +194,7 @@ module.exports = function (grunt) {
       excludes: excludes
     }, function (err, matchFn) {
       if (err) {
+        grunt.warn('istanbul.matcherFor failed.');
         grunt.warn(err);
         return;
       }
@@ -231,7 +236,8 @@ module.exports = function (grunt) {
         reportDir: 'coverage',
         report: [
           'lcov'
-        ]
+        ],
+        excludes: []
       },
 
       // jasmine-node specific options
@@ -256,6 +262,9 @@ module.exports = function (grunt) {
 
 
     fileSrc = this.filesSrc || fileSrc;
+    grunt.log.writeln('fileSrc: ');
+    grunt.log.writeln(fileSrc);
+
     reportingDir = path.resolve(process.cwd(), options.coverage.reportDir);
 
     // Tell grunt this task is asynchronous.
@@ -273,13 +282,15 @@ module.exports = function (grunt) {
         options.specNameMatcher + '\\.') + '(' + options.extensions + ')$', 'i');
     }
 
-    console.log('options.regExpSpec');
-    console.log(options.regExpSpec);
+    grunt.log.writeln('options.regExpSpec');
+    grunt.log.writeln(options.regExpSpec);
 
     if (typeof options.onComplete !== 'function') {
       options.onComplete = function (runner, log) {
+        grunt.log.writeln('Running onComplete');
+
         var exitCode = 1;
-        grunt.log.write('\n');
+        grunt.log.writeln('');
         if (runner.results().failedCount === 0) {
           exitCode = 0;
         }

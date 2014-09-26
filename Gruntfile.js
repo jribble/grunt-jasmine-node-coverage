@@ -16,7 +16,7 @@ module.exports = function (grunt) {
           isVerbose: true,
           showColors: true,
 
-          forceExit: true,
+          forceExit: false,
           match: '.',
           matchall: false,
           specFolders: ['spec'],
