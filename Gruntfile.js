@@ -10,20 +10,24 @@ module.exports = function (grunt) {
     },
     jasmine_node: {
       all: {
-
         options: {
-          coverage: {},
+          coverage: {
+            print: 'detail'
+          },
           isVerbose: true,
           showColors: true,
 
-          forceExit: false,
+          forceExit: true,
           match: '.',
-          matchall: false,
+          matchAll: false,
           specFolders: ['spec'],
           extensions: 'js',
           specNameMatcher: 'spec'
         },
-        src: ['tasks/*.js']
+        src: [
+          'spec/calculator.js',
+          'spec/obj-util.js'
+        ]
       }
     }
   });

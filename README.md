@@ -2,11 +2,17 @@
 
 > Runs jasmine-node with Istanbul code coverage
 
-A Grunt task to run your Jasmine feature suite using jasmine-node and istanbul for code coverage reports.
+A [Grunt](http://gruntjs.com/) task to run your [Jasmine](http://jasmine.github.io/)
+feature suite using [jasmine-node][]
+and [Istanbul](https://github.com/gotwarlost/istanbul) for code coverage reports.
 
 ## Getting Started
 
-Install this grunt plugin next to your project's `Gruntfile.js` with: `npm install grunt-jasmine-node-coverage`
+Install this grunt plugin next to your project's `Gruntfile.js` with:
+
+```sh
+npm install grunt-jasmine-node-coverage --save-dev
+```
 
 Then add these lines to your project's `Gruntfile.js` configuration file:
 
@@ -18,7 +24,7 @@ grunt.initConfig({
         coverage: {},
         forceExit: true,
         match: '.',
-        matchall: false,
+        matchAll: false,
         specFolders: ['tests'],
         extensions: 'js',
         specNameMatcher: 'spec',
@@ -126,7 +132,7 @@ Type: `boolean`
 
 Default: `false`
 
-Exit on failure
+Exit on failure by skipping any asyncronous tasks pending.
 
 #### options.match
 
@@ -136,13 +142,15 @@ Default: `'.'`
 
 used in the beginning of regular expression
 
-#### options.matchall
+#### options.matchAll
 
 Type: `boolean`
 
 Default: `false`
 
-if false, the specNameMatcher is used, true will just be ''
+When true, `options.specFolders` and `options.specNameMatcher` are
+ignored while building the `options.regExpSpec` which is then
+handed down to jasmine-node.
 
 #### options.specNameMatcher
 
@@ -194,6 +202,8 @@ Default: `false`
 
 When `true` will be adding `GrowlReporter`.
 
+See https://github.com/mhevery/jasmine-node#growl-notifications
+
 #### options.useRequireJs
 
 Type: `boolean`
@@ -206,7 +216,7 @@ Type: `function`
 
 Default: `null`
 
-Will be called on Terminal and Teamcity reporters and on RequireJs runner.
+Will be called on Terminal and Teamcity reporters and on RequireJS runner.
 
 
 #### options.includeStackTrace
@@ -223,7 +233,7 @@ Type: `boolean`
 
 Default: `false`
 
-Seems to be currently (1.4.3) only supported in the command line options of jasmine-node.
+Seems to be currently (1.4.3) only supported in the command line options of [jasmine-node][].
 
 ## Bugs
 

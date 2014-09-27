@@ -95,10 +95,6 @@ module.exports = function (grunt) {
   };
 
   var exitHandler = function () {
-
-    grunt.log.writeln('typeof global[' + coverageVar + ']: ' + (typeof global[coverageVar]));
-    grunt.log.writeln(Object.keys(global[coverageVar]));
-
     if (typeof global[coverageVar] !== 'object' || Object.keys(global[coverageVar]).length === 0) {
       grunt.log.error('No coverage information was collected, exit without writing coverage information');
       return;
@@ -168,8 +164,6 @@ module.exports = function (grunt) {
       reports.push(Report.create(reportClassName, {dir: reportingDir}));
     });
 
-    grunt.log.writeln('options.coverage.print: ' + options.coverage.print);
-
     if (options.coverage.print !== 'none') {
       switch (options.coverage.print) {
         case 'detail':
@@ -179,7 +173,7 @@ module.exports = function (grunt) {
           reports.push(Report.create('text'));
           reports.push(Report.create('text-summary'));
           break;
-        case 'summary':
+        default:
           reports.push(Report.create('text-summary'));
           break;
       }
@@ -214,7 +208,7 @@ module.exports = function (grunt) {
       useHelpers: false, // boolean
       forceExit: false, // boolean, exit on failure
       match: '.', // string, used in the beginning of regular expression
-      matchall: false, // boolean, if false, the specNameMatcher is used, true will just be ''
+      matchAll: false, // boolean, if false, the specNameMatcher is used, true will just be ''
       specNameMatcher: 'spec', // string, filename expression
       extensions: 'js', // string, used in regular expressions after dot, inside (), thus | could be used
       captureExceptions: false, // boolean
@@ -262,8 +256,6 @@ module.exports = function (grunt) {
 
 
     fileSrc = this.filesSrc || fileSrc;
-    grunt.log.writeln('fileSrc: ');
-    grunt.log.writeln(fileSrc);
 
     reportingDir = path.resolve(process.cwd(), options.coverage.reportDir);
 
@@ -276,19 +268,14 @@ module.exports = function (grunt) {
 
     // Default value in jasmine-node is 'new RegExp(".(js)$", "i")'
     if (options.regExpSpec === null) {
-      options.regExpSpec = new RegExp('(' +
-        options.specFolders.join('|').replace(/\//g, '\\/') + ')' +
-        options.match + (options.matchall ? '.' :
+      options.regExpSpec = new RegExp(
+        options.match + (options.matchAll ? '' :
+        //'(' + options.specFolders.join('|').replace(/\//g, '\\/') + ')\\/' +
         options.specNameMatcher + '\\.') + '(' + options.extensions + ')$', 'i');
     }
 
-    grunt.log.writeln('options.regExpSpec');
-    grunt.log.writeln(options.regExpSpec);
-
     if (typeof options.onComplete !== 'function') {
       options.onComplete = function (runner, log) {
-        grunt.log.writeln('Running onComplete');
-
         var exitCode = 1;
         grunt.log.writeln('');
         if (runner.results().failedCount === 0) {
