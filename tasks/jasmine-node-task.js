@@ -39,9 +39,12 @@ module.exports = function (grunt) {
 
   var coverageThresholdCheck = function (collector) {
 
+    // http://gotwarlost.github.io/istanbul/public/apidocs/classes/ObjectUtils.html
+    var objUtils = istanbul.utils;
+
     // Check against thresholds
     collector.files().forEach(function (file) {
-      var summary = istanbul.utils.summarizeFileCoverage(
+      var summary = objUtils.summarizeFileCoverage(
         collector.fileCoverageFor(file)
       );
 
@@ -61,7 +64,7 @@ module.exports = function (grunt) {
 
   var collectReports = function () {
     var reportFile = path.resolve(reportingDir, options.coverage.reportFile),
-      collector = new istanbul.Collector(),
+      collector = new istanbul.Collector(), // http://gotwarlost.github.io/istanbul/public/apidocs/classes/Collector.html
       cov = global[coverageVar];
 
     //important: there is no event loop at this point
@@ -160,6 +163,7 @@ module.exports = function (grunt) {
       reports.push(Report.create(reportClassName, {dir: reportingDir}));
     });
 
+    // TODO: Move to options.coverage.report list
     if (options.coverage.print !== 'none') {
       switch (options.coverage.print) {
         case 'detail':
@@ -178,6 +182,7 @@ module.exports = function (grunt) {
     var excludes = options.coverage.excludes || [];
     excludes.push('**/node_modules/**');
 
+    // http://gotwarlost.github.io/istanbul/public/apidocs/classes/Istanbul.html#method_matcherFor
     istanbul.matcherFor({
       root: options.projectRoot,
       includes: fileSrc,

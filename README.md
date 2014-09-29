@@ -193,6 +193,7 @@ Default: `false`
 
 If `true`, will be using `TeamcityReporter` instead of possible `isVerbose` option
 
+http://gotwarlost.github.io/istanbul/public/apidocs/classes/TeamcityReport.html
 
 #### options.growl
 
