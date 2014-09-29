@@ -49,10 +49,10 @@ module.exports = function (grunt) {
         var threshold = options.coverage.thresholds[metric];
         var actual = summary[metric];
         if (!actual) {
-          grunt.warn('unrecognized metric: ' + metric);
+          grunt.fail.warn('unrecognized metric: ' + metric);
         }
         if (actual.pct < threshold) {
-          grunt.warn('expected ' + metric + ' coverage to be at least ' + threshold +
+          grunt.fail.warn('expected ' + metric + ' coverage to be at least ' + threshold +
           '% but was ' + actual.pct + '%' + '\n\tat (' + file + ')');
         }
       });
@@ -67,10 +67,9 @@ module.exports = function (grunt) {
     //important: there is no event loop at this point
     //everything that happens in this exit handler MUST be synchronous
     grunt.file.mkdir(reportingDir); //yes, do this again since some test runners could clean the dir initially created
-    if (options.coverage.print !== 'none') {
-      grunt.log.writeln('=============================================================================');
-      grunt.log.writeln('Writing coverage object [' + reportFile + ']');
-    }
+
+    grunt.verbose.writeln('Writing coverage object [' + reportFile + ']');
+
     fs.writeFileSync(reportFile, JSON.stringify(cov), 'utf8');
 
     if (options.coverage.collect !== false) {
@@ -82,10 +81,7 @@ module.exports = function (grunt) {
       collector.add(cov);
     }
 
-    if (options.coverage.print !== 'none') {
-      grunt.log.writeln('Writing coverage reports at [' + reportingDir + ']');
-      grunt.log.writeln('=============================================================================');
-    }
+    grunt.verbose.writeln('Writing coverage reports at [' + reportingDir + ']');
 
     reports.forEach(function (report) {
       report.writeReport(collector, true);
@@ -188,8 +184,8 @@ module.exports = function (grunt) {
       excludes: excludes
     }, function (err, matchFn) {
       if (err) {
-        grunt.warn('istanbul.matcherFor failed.');
-        grunt.warn(err);
+        grunt.fail.warn('istanbul.matcherFor failed.');
+        grunt.fail.warn(err);
         return;
       }
       istanbulMatcherRun(matchFn);
@@ -253,7 +249,6 @@ module.exports = function (grunt) {
       growl: false, // boolean
       //coffee: false, // boolean
     }, this.options());
-
 
     fileSrc = this.filesSrc || fileSrc;
 
