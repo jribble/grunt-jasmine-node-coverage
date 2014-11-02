@@ -11,7 +11,7 @@ Then add this line to your project's `grunt.js` grunt file:
 grunt.initConfig({
   jasmine_node: {
     coverage: {
-
+      savePath: './coverage'
     },
     options: {
       forceExit: true,
@@ -20,6 +20,9 @@ grunt.initConfig({
       extensions: 'js',
       specNameMatcher: 'spec',
       captureExceptions: true,
+      useHelpers, false,
+      colors: true,
+      verbose: true,
       junitreport: {
         report: false,
         savePath : "./build/reports/jasmine/",
