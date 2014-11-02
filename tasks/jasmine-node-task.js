@@ -155,15 +155,15 @@ module.exports = function (grunt) {
         var matchall = grunt.config(this.name + ".options.matchall") || false;
         var specNameMatcher = grunt.config(this.name + ".options.specNameMatcher") || 'spec';
         var extensions = grunt.config(this.name + ".options.extensions") || 'js';
-        var useHelpers = grunt.config(this.name + ".useHelpers") || false;
+        var useHelpers = grunt.config(this.name + ".options.useHelpers") || false;
         var report = grunt.config(this.name + ".options.jUnit.report") || false;
         var savePath = grunt.config(this.name + ".options.jUnit.savePath") || "./reports/";
         var captureExceptions = grunt.config(this.name + ".options.captureExceptions") || false;
 
         var coverage = grunt.config(this.name + ".coverage") || false;
 
-        isVerbose = grunt.config(this.name + ".verbose");
-        var showColors = grunt.config(this.name + ".colors");
+        isVerbose = grunt.config(this.name + ".options.verbose");
+        var showColors = grunt.config(this.name + ".options.colors");
 
         // Tell grunt this task is asynchronous.
         var done = this.async();
