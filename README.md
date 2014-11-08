@@ -2,6 +2,9 @@
 
 > Runs jasmine-node with Istanbul code coverage
 
+[![Dependency Status](https://david-dm.org/jribble/grunt-jasmine-node-coverage.svg)](https://david-dm.org/jribble/grunt-jasmine-node-coverage)
+[![devDependency Status](https://david-dm.org/jribble/grunt-jasmine-node-coverage/dev-status.svg)](https://david-dm.org/jribble/grunt-jasmine-node-coverage#info=devDependencies)
+
 A [Grunt](http://gruntjs.com/) task to run your [Jasmine](http://jasmine.github.io/)
 feature suite using [jasmine-node][]
 and [Istanbul](https://github.com/gotwarlost/istanbul) for code coverage reports.
