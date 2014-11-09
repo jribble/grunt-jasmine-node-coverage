@@ -7,40 +7,41 @@
     "name" : "Jarrod Ribble",
     "email" : "jarrod.ribble@gmail.com"
   },
-  "repository" : {
-    "type" : "git",
-    "url" : "git://github.com/jribble/grunt-jasmine-node-coverage.git"
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jribble/grunt-jasmine-node-coverage.git"
   },
-  "bugs" : {
-    "url" : "https://github.com/jribble/grunt-jasmine-node-coverage/issues"
+  "bugs": {
+    "url": "https://github.com/jribble/grunt-jasmine-node-coverage/issues"
   },
-  "licenses" : [
+  "licenses": [
     {
-      "type" : "MIT",
-      "url" : "https://github.com/jribble/grunt-jasmine-node-coverage/blob/master/LICENSE-MIT"
+      "type": "MIT",
+      "url": "https://github.com/jribble/grunt-jasmine-node-coverage/blob/master/LICENSE-MIT"
     }
   ],
-  "main" : "grunt.js",
-  "bin" : "bin/grunt-jasmine-node",
-  "engines" : {
-    "node" : ">=0.8.0"
+  "main": "grunt.js",
+  "bin": "bin/grunt-jasmine-node",
+  "engines": {
+    "node": ">=0.8.0"
   },
-  "scripts" : {
+  "scripts": {
     "test": "grunt test"
   },
-  "dependencies" : {
-    "jasmine-node": ">=1.4.0",
-    "istanbul": "~0.3"
+  "dependencies": {
+    "deepmerge": "~0.2",
+    "istanbul": "~0.3",
+    "jasmine-node": ">=1.4.0"
   },
-  "devDependencies" : {
-    "grunt" : "~0.4",
+  "devDependencies": {
+    "grunt": "~0.4",
     "jasmine-node": ">=1.4.0",
     "grunt-contrib-jshint": "~0.10"
   },
   "peerDependencies": {
     "grunt" : "~0.4"
   },
-  "keywords" : [
+  "keywords": [
     "gruntplugin",
     "grunt",
     "plugins",
