@@ -51,7 +51,8 @@ grunt.registerTask('default', 'jasmine_node');
 
 ## Configuring tasks
 
-Grunt tasks should be configured by following [the multi task configuration](http://gruntjs.com/creating-tasks#multi-tasks)
+Grunt tasks should be configured by following 
+[the multi task configuration](http://gruntjs.com/creating-tasks#multi-tasks)
 form, thus wrapping each configuration in an object inside the `jasmine_node` root object.
 
 ### Task configuration options
@@ -67,6 +68,7 @@ Default: `process.cwd()`
 
 See http://nodejs.org/api/process.html#process_process_cwd
 
+
 #### options.specFolders
 
 Type: `array`
@@ -75,11 +77,13 @@ Default: `[options.projectRoot]`
 
 List of folders in which any specs are looked for.
 
+
 #### options.useHelpers
 
 Type: `boolean`
 
 Default: `false`
+
 
 #### options.coverage
 
@@ -114,11 +118,13 @@ Istanbul specific configuration. Use empty object,
 
 Please note that `excludes` will always contain `'**/node_modules/**'`.
 
+
 #### options.showColors
 
 Type: `boolean`
 
 Default: `false`
+
 
 #### options.isVerbose
 
@@ -129,6 +135,7 @@ Default: `true`
 When `true` and `options.teamcity` is `false`, will use
 `TerminalVerboseReporter`, else `TerminalReporter`.
 
+
 #### options.forceExit
 
 Type: `boolean`
@@ -137,6 +144,7 @@ Default: `false`
 
 Exit on failure by skipping any asyncronous tasks pending.
 
+
 #### options.match
 
 Type: `string`
@@ -144,6 +152,7 @@ Type: `string`
 Default: `'.'`
 
 used in the beginning of regular expression
+
 
 #### options.matchAll
 
@@ -155,6 +164,7 @@ When true, `options.specFolders` and `options.specNameMatcher` are
 ignored while building the `options.regExpSpec` which is then
 handed down to jasmine-node.
 
+
 #### options.specNameMatcher
 
 Type: `string`
@@ -162,6 +172,7 @@ Type: `string`
 Default: `'spec'`
 
 filename expression
+
 
 #### options.extensions
 
@@ -171,11 +182,13 @@ Default: `'js'`
 
 Used in regular expressions after dot, inside (), thus | could be used
 
+
 #### options.captureExceptions
 
 Type: `boolean`
 
 Default: `false`
+
 
 #### options.junitreport
 
@@ -198,6 +211,7 @@ If `true`, will be using `TeamcityReporter` instead of possible `isVerbose` opti
 
 http://gotwarlost.github.io/istanbul/public/apidocs/classes/TeamcityReport.html
 
+
 #### options.growl
 
 Type: `boolean`
@@ -208,11 +222,13 @@ When `true` will be adding `GrowlReporter`.
 
 See https://github.com/mhevery/jasmine-node#growl-notifications
 
+
 #### options.useRequireJs
 
 Type: `boolean`
 
 Default: `false`
+
 
 #### options.onComplete
 
@@ -231,6 +247,7 @@ Default: `false`
 
 Used only in `TerminalReporter`.
 
+
 #### options.coffee
 
 Type: `boolean`
@@ -239,10 +256,12 @@ Default: `false`
 
 Seems to be currently (1.4.3) only supported in the command line options of [jasmine-node][].
 
+
 ## Bugs
 
 Help us to squash them by submitting an issue that describes how you encountered it;
-please be as specific as possible including operating system, node, grunt, and grunt-jasmine-node-coverage versions.
+please be as specific as possible including operating system, `node`, `grunt`, and 
+`grunt-jasmine-node-coverage` versions.
 
 ```sh
 npm --versions
@@ -250,12 +269,21 @@ npm --versions
 
 ## Release History
 
-see [GitHub Repository](/jribble/grunt-jasmine-node-coverage).
+* v0.3.0  (2014-11-09)  Grunt usage as multi task. Fixes #12 and #18
+* v0.2.0  (2014-11-03)  Better Grunt API usage. Fixes #10, #13, #14, #16, #19 and #20
+* v0.1.11  (2014-05-15)  Task name fix for `grunt.renametask` use case
+* v0.1.10  (2014-04-07)  JSHint configuration and task exit fixes
+* v0.1.9  (2014-04-02)  `jasmine_node.options.isVerbose` was not working
+* v0.1.8  (2014-03-03)  Add captureExceptions support and quit on exception
+* v0.1.7  (2013-12-13)  Istanbul update, threshold configuration and JUNit output
+* v0.1.6  (2013-07-26)  Change `isVerbose` option to `verbose`
+* v0.1.5  (2013-07-15)  Initial coverage with Istanbul release, originally forked from `grunt-jasmine-node`
+
 
 ## License
 
 Copyright (c) 2013 "jribble" Jarrod Ribble & contributors.
-Based on grunt-jasmine-node (https://github.com/jasmine-contrib/grunt-jasmine-node)
+Based on [grunt-jasmine-node](https://github.com/jasmine-contrib/grunt-jasmine-node).
 
 Copyright (c) 2012 "s9tpepper" Omar Gonzalez & contributors.
 Licensed under the MIT license.
