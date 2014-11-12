@@ -4,6 +4,7 @@
 
 [![Dependency Status](https://david-dm.org/jribble/grunt-jasmine-node-coverage.svg)](https://david-dm.org/jribble/grunt-jasmine-node-coverage)
 [![devDependency Status](https://david-dm.org/jribble/grunt-jasmine-node-coverage/dev-status.svg)](https://david-dm.org/jribble/grunt-jasmine-node-coverage#info=devDependencies)
+[![Build Status](https://travis-ci.org/jribble/grunt-jasmine-node-coverage.svg)](https://travis-ci.org/jribble/grunt-jasmine-node-coverage)
 
 A [Grunt](http://gruntjs.com/) task to run your [Jasmine](http://jasmine.github.io/)
 feature suite using [jasmine-node][]
@@ -51,7 +52,7 @@ grunt.registerTask('default', 'jasmine_node');
 
 ## Configuring tasks
 
-Grunt tasks should be configured by following 
+Grunt tasks should be configured by following
 [the multi task configuration](http://gruntjs.com/creating-tasks#multi-tasks)
 form, thus wrapping each configuration in an object inside the `jasmine_node` root object.
 
@@ -260,7 +261,7 @@ Seems to be currently (1.4.3) only supported in the command line options of [jas
 ## Bugs
 
 Help us to squash them by submitting an issue that describes how you encountered it;
-please be as specific as possible including operating system, `node`, `grunt`, and 
+please be as specific as possible including operating system, `node`, `grunt`, and
 `grunt-jasmine-node-coverage` versions.
 
 ```sh
