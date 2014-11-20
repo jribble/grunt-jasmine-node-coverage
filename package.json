@@ -36,6 +36,7 @@
     "test": "grunt test"
   },
   "files": [
+    "bin",
     "tasks",
     "LICENSE-MIT",
     "package.json",
