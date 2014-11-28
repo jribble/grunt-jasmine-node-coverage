@@ -5,6 +5,8 @@
 [![Dependency Status](https://david-dm.org/jribble/grunt-jasmine-node-coverage.svg)](https://david-dm.org/jribble/grunt-jasmine-node-coverage)
 [![devDependency Status](https://david-dm.org/jribble/grunt-jasmine-node-coverage/dev-status.svg)](https://david-dm.org/jribble/grunt-jasmine-node-coverage#info=devDependencies)
 [![Build Status](https://travis-ci.org/jribble/grunt-jasmine-node-coverage.svg)](https://travis-ci.org/jribble/grunt-jasmine-node-coverage)
+[![Built with Grunt](http://img.shields.io/badge/Grunt-0.4-blue.svg?style=flat-square)](http://gruntjs.com/)
+[![Analytics](https://ga-beacon.appspot.com/UA-2643697-15/grunt-jasmine-node-coverage/index)](https://github.com/igrigorik/ga-beacon)
 
 A [Grunt](http://gruntjs.com/) task to run your [Jasmine](http://jasmine.github.io/)
 feature suite using [jasmine-node][]
