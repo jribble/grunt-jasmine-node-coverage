@@ -108,7 +108,8 @@ module.exports = function (grunt) {
       hookOpts = {verbose: options.isVerbose};
 
     istanbul.hook.hookRequire(matchFn, transformer, hookOpts);
-
+    istanbul.hook.hookRunInThisContext(matchFn, transformer, hookOpts);
+	
     //initialize the global variable to stop mocha from complaining about leaks
     global[coverageVar] = {};
 
