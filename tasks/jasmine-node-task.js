@@ -108,7 +108,11 @@ module.exports = function (grunt) {
       hookOpts = {verbose: options.isVerbose};
 
     istanbul.hook.hookRequire(matchFn, transformer, hookOpts);
-
+    
+    // Hook context to ensure that all requireJS modules get instrumented.
+    // Hooking require in isolation does not appear to be sufficient.
+    istanbul.hook.hookRunInThisContext(matchFn, transformer, hookOpts);
+	
     //initialize the global variable to stop mocha from complaining about leaks
     global[coverageVar] = {};
 
