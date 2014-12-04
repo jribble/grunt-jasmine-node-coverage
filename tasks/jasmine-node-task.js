@@ -261,8 +261,9 @@ module.exports = function (grunt) {
 
     fileSrc = this.filesSrc || fileSrc;
 
-    reportingDir = path.resolve(process.cwd(), options.coverage.reportDir);
-
+    if(options.coverage) {
+      reportingDir = path.resolve(process.cwd(), options.coverage.reportDir);
+    }
     // Tell grunt this task is asynchronous.
     done = this.async();
 
