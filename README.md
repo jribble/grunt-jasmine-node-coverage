@@ -108,7 +108,7 @@ Istanbul specific configuration. Use empty object,
     lines: 0,
     functions: 0
   },
-  savePath: 'coverage',
+  reportDir: 'coverage',
   report: [
     'lcov'
   ],
@@ -119,7 +119,7 @@ Istanbul specific configuration. Use empty object,
 }
 ```
 
-Please note that `excludes` will always contain `'**/node_modules/**'`.
+Please note that `excludes` list will always be added `'**/node_modules/**'` internally.
 
 
 #### options.showColors
