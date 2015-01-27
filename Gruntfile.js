@@ -2,9 +2,9 @@ module.exports = function (grunt) {
   'use strict';
 
   grunt.initConfig({
-    jshint: {
+    eslint: {
       options: {
-        jshintrc: '.jshintrc'
+        config: '.eslintrc'
       },
       all: ['tasks/*.js']
     },
@@ -32,10 +32,10 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-eslint');
   grunt.loadTasks('tasks');
 
-  grunt.registerTask('default', ['jshint', 'jasmine_node']);
+  grunt.registerTask('default', ['eslint', 'jasmine_node']);
   grunt.registerTask('test', ['default']);
 
 };
