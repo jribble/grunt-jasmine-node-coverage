@@ -1,5 +1,7 @@
-module.exports = function (grunt) {
-  'use strict';
+
+'use strict';
+
+module.exports = function jasmineNodeTask(grunt) {
 
   var istanbul = require('istanbul'),
     jasmine = require('jasmine-node'),
@@ -14,22 +16,24 @@ module.exports = function (grunt) {
     done,
     reports = [];
 
-  var coverageCollect = function (covPattern, collector) {
+  var coverageCollect = function coverageCollect(covPattern, collector) {
 
     var coverageFiles = grunt.file.expand(covPattern);
 
-    coverageFiles.forEach(function (coverageFile) {
+    coverageFiles.forEach(function eachFiles(coverageFile) {
       var contents = fs.readFileSync(coverageFile, 'utf8');
       var fileCov = JSON.parse(contents);
       if (options.coverage.relativize) {
         var cwd = process.cwd();
         var newFileCov = {};
         for (var key in fileCov) {
-          var item = fileCov[key];
-          var filePath = item.path;
-          var relPath = path.relative(cwd, filePath);
-          item.path = relPath;
-          newFileCov[relPath] = item;
+          if (fileCov.hasOwnProperty(key)) {
+            var item = fileCov[key];
+            var filePath = item.path;
+            var relPath = path.relative(cwd, filePath);
+            item.path = relPath;
+            newFileCov[relPath] = item;
+          }
         }
         fileCov = newFileCov;
       }
@@ -37,18 +41,18 @@ module.exports = function (grunt) {
     });
   };
 
-  var coverageThresholdCheck = function (collector) {
+  var coverageThresholdCheck = function coverageThresholdCheck(collector) {
 
     // http://gotwarlost.github.io/istanbul/public/apidocs/classes/ObjectUtils.html
     var objUtils = istanbul.utils;
 
     // Check against thresholds
-    collector.files().forEach(function (file) {
+    collector.files().forEach(function eachFiles(file) {
       var summary = objUtils.summarizeFileCoverage(
         collector.fileCoverageFor(file)
       );
 
-      Object.keys(options.coverage.thresholds).forEach(function (metric) {
+      Object.keys(options.coverage.thresholds).forEach(function eachKeys(metric) {
         var threshold = options.coverage.thresholds[metric];
         var actual = summary[metric];
         if (!actual) {
@@ -62,21 +66,21 @@ module.exports = function (grunt) {
     });
   };
 
-  var collectReports = function () {
+  var collectReports = function collectReports() {
     var reportFile = path.resolve(reportingDir, options.coverage.reportFile),
       collector = new istanbul.Collector(), // http://gotwarlost.github.io/istanbul/public/apidocs/classes/Collector.html
       cov = global[coverageVar];
 
-    //important: there is no event loop at this point
-    //everything that happens in this exit handler MUST be synchronous
-    grunt.file.mkdir(reportingDir); //yes, do this again since some test runners could clean the dir initially created
+    // important: there is no event loop at this point
+    // everything that happens in this exit handler MUST be synchronous
+    grunt.file.mkdir(reportingDir); // yes, do this again since some test runners could clean the dir initially created
 
     grunt.verbose.writeln('Writing coverage object [' + reportFile + ']');
 
     fs.writeFileSync(reportFile, JSON.stringify(cov), 'utf8');
 
     if (options.coverage.collect !== false) {
-      options.coverage.collect.forEach(function (covPattern) {
+      options.coverage.collect.forEach(function eachCollect(covPattern) {
         coverageCollect(covPattern, collector);
       });
     }
@@ -86,14 +90,14 @@ module.exports = function (grunt) {
 
     grunt.verbose.writeln('Writing coverage reports at [' + reportingDir + ']');
 
-    reports.forEach(function (report) {
+    reports.forEach(function eachReport(report) {
       report.writeReport(collector, true);
     });
 
     coverageThresholdCheck(collector);
   };
 
-  var exitHandler = function () {
+  var exitHandler = function exitHandler() {
     if (typeof global[coverageVar] !== 'object' || Object.keys(global[coverageVar]).length === 0) {
       grunt.log.error('No coverage information was collected, exit without writing coverage information');
       return;
@@ -101,26 +105,26 @@ module.exports = function (grunt) {
     collectReports();
   };
 
-  var istanbulMatcherRun = function (matchFn) {
+  var istanbulMatcherRun = function istanbulMatcherRun(matchFn) {
 
     var instrumenter = new istanbul.Instrumenter({coverageVariable: coverageVar}),
       transformer = instrumenter.instrumentSync.bind(instrumenter),
       hookOpts = {verbose: options.isVerbose};
 
     istanbul.hook.hookRequire(matchFn, transformer, hookOpts);
-    
+
     // Hook context to ensure that all requireJS modules get instrumented.
     // Hooking require in isolation does not appear to be sufficient.
     istanbul.hook.hookRunInThisContext(matchFn, transformer, hookOpts);
-	
-    //initialize the global variable to stop mocha from complaining about leaks
+
+    // initialize the global variable to stop mocha from complaining about leaks
     global[coverageVar] = {};
 
     process.once('exit', exitHandler);
   };
 
 
-  var runner = function () {
+  var runner = function runner() {
 
     if (options.captureExceptions) {
       // Grunt will kill the process when it handles an uncaughtException, so we need to
@@ -128,7 +132,7 @@ module.exports = function (grunt) {
       // A downside of this is that we ignore any other registered `ungaughtException`
       // handlers.
       process.removeAllListeners('uncaughtException');
-      process.on('uncaughtException', function (e) {
+      process.on('uncaughtException', function onUncaught(e) {
         grunt.log.error('Caught unhandled exception: ', e.toString());
         grunt.log.error(e.stack);
       });
@@ -155,15 +159,15 @@ module.exports = function (grunt) {
     }
   };
 
-  var doCoverage = function () {
+  var doCoverage = function doCoverage() {
 
     // set up require hooks to instrument files as they are required
     var Report = istanbul.Report;
 
-    grunt.file.mkdir(reportingDir); //ensure we fail early if we cannot do this
+    grunt.file.mkdir(reportingDir); // ensure we fail early if we cannot do this
 
     var reportClassNames = options.coverage.report;
-    reportClassNames.forEach(function (reportClassName) {
+    reportClassNames.forEach(function eachReport(reportClassName) {
       reports.push(Report.create(reportClassName, {dir: reportingDir}));
     });
 
@@ -191,7 +195,7 @@ module.exports = function (grunt) {
       root: options.projectRoot,
       includes: fileSrc,
       excludes: excludes
-    }, function (err, matchFn) {
+    }, function matcherCallback(err, matchFn) {
       if (err) {
         grunt.fail.warn('istanbul.matcherFor failed.');
         grunt.fail.warn(err);
@@ -203,7 +207,7 @@ module.exports = function (grunt) {
 
   };
 
-  grunt.registerMultiTask('jasmine_node', 'Runs jasmine-node with Istanbul code coverage', function () {
+  grunt.registerMultiTask('jasmine_node', 'Runs jasmine-node with Istanbul code coverage', function registerGrunt() {
 
     // Default options. Once Grunt does recursive merge, use that, maybe 0.4.6
     options = merge({
@@ -255,8 +259,9 @@ module.exports = function (grunt) {
         consolidate: true
       },
       includeStackTrace: false, // boolean
-      growl: false, // boolean
-      //coffee: false, // boolean
+      growl: false // boolean
+
+      // coffee: false, // boolean
     }, this.options());
 
     fileSrc = this.filesSrc || fileSrc;
@@ -275,12 +280,12 @@ module.exports = function (grunt) {
     if (options.regExpSpec === null) {
       options.regExpSpec = new RegExp(
         options.match + (options.matchAll ? '' :
-        //'(' + options.specFolders.join('|').replace(/\//g, '\\/') + ')\\/' +
+        // '(' + options.specFolders.join('|').replace(/\//g, '\\/') + ')\\/' +
         options.specNameMatcher + '\\.') + '(' + options.extensions + ')$', 'i');
     }
 
     if (typeof options.onComplete !== 'function') {
-      options.onComplete = function (runner, log) {
+      options.onComplete = function onComplete(runner) {
         var exitCode = 1;
         grunt.log.writeln('');
         if (runner.results().failedCount === 0) {

@@ -4,6 +4,6 @@ function Calculator() {
             return firstNum + secondNum;
         }
     };
-};
+}
 
 module.exports = Calculator;

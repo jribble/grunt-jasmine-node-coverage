@@ -4,4 +4,4 @@ function toType(obj) {
 
 module.exports = {
 	toType: toType
-}
+};
