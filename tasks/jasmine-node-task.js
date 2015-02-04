@@ -266,7 +266,7 @@ module.exports = function jasmineNodeTask(grunt) {
 
     fileSrc = this.filesSrc || fileSrc;
 
-    if(options.coverage) {
+    if (options.coverage) {
       reportingDir = path.resolve(process.cwd(), options.coverage.reportDir);
     }
     // Tell grunt this task is asynchronous.

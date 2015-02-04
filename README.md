@@ -272,6 +272,7 @@ npm --versions
 
 ## Release History
 
+* v0.3.2  (2015-02-04)  Fixes for failure cases and documentation, #33, #36, #37 and #38
 * v0.3.1  (2014-11-21)  Installation failed. Should fix #30
 * v0.3.0  (2014-11-09)  Grunt usage as multi task. Fixes #12 and #18
 * v0.2.0  (2014-11-03)  Better Grunt API usage. Fixes #10, #13, #14, #16, #19 and #20
