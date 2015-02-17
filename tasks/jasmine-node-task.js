@@ -119,8 +119,6 @@ module.exports = function jasmineNodeTask(grunt) {
 
     // initialize the global variable to stop mocha from complaining about leaks
     global[coverageVar] = {};
-
-    process.once('exit', exitHandler);
   };
 
 
@@ -286,15 +284,18 @@ module.exports = function jasmineNodeTask(grunt) {
 
     if (typeof options.onComplete !== 'function') {
       options.onComplete = function onComplete(runner) {
-
         var exitCode = 1;
+        var failedCount = runner.results().failedCount;
         grunt.log.writeln('');
-        if (runner.results().failedCount === 0) {
+        if (failedCount === 0) {
           exitCode = 0;
+          if (options.coverage !== false) {
+            exitHandler();
+          }
         }
 
         if (options.forceExit && exitCode === 1) {
-          process.exit(exitCode);
+          grunt.fail.warn(failedCount + ' test(s) faild.', exitCode);
         }
         done(exitCode === 0);
       };
