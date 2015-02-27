@@ -18,7 +18,8 @@ module.exports = function jasmineNodeTask(grunt) {
 
   var coverageCollect = function coverageCollect(covPattern, collector) {
 
-    var coverageFiles = grunt.file.expand(covPattern);
+    // The pattern should be relative to the directory in which the reports are written
+    var coverageFiles = grunt.file.expand(path.resolve(reportingDir, covPattern));
 
     coverageFiles.forEach(function eachFiles(coverageFile) {
       var contents = fs.readFileSync(coverageFile, 'utf8');
@@ -224,8 +225,8 @@ module.exports = function jasmineNodeTask(grunt) {
       coverage: { // boolean|object
         reportFile: 'coverage.json',
         print: 'summary', // none, summary, detail, both
-        collect: [
-          'coverage/coverage*.json'
+        collect: [ // paths relative to 'reportDir'
+          'coverage*.json'
         ], // coverage report file matching patters
         relativize: true,
         thresholds: {
@@ -264,9 +265,6 @@ module.exports = function jasmineNodeTask(grunt) {
 
     fileSrc = this.filesSrc || fileSrc;
 
-    if (options.coverage) {
-      reportingDir = path.resolve(process.cwd(), options.coverage.reportDir);
-    }
     // Tell grunt this task is asynchronous.
     done = this.async();
 
@@ -295,14 +293,14 @@ module.exports = function jasmineNodeTask(grunt) {
         }
 
         if (options.forceExit && exitCode === 1) {
-          grunt.fail.warn(failedCount + ' test(s) faild.', exitCode);
+          grunt.fail.warn(failedCount + ' test(s) failed.', exitCode);
         }
         done(exitCode === 0);
       };
     }
 
-
     if (options.coverage !== false) {
+      reportingDir = path.resolve(process.cwd(), options.coverage.reportDir);
       doCoverage();
     }
     else {

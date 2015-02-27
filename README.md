@@ -112,8 +112,8 @@ Istanbul specific configuration. Use empty object,
   report: [
     'lcov'
   ],
-  collect: [ // false to disable
-    'coverage/*coverage.json'
+  collect: [ // false to disable, paths are relative to 'reportDir'
+    '*coverage.json'
   ],
   excludes: []
 }
