@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "grunt": "~0.4",
-    "grunt-eslint": "~6.0"
+    "grunt-eslint": "~7.0"
   },
   "peerDependencies": {
     "grunt": "~0.4"
