@@ -236,9 +236,6 @@ module.exports = function jasmineNodeTask(grunt) {
           functions: 0
         },
         reportDir: 'coverage',
-        report: [
-          'lcov'
-        ],
         excludes: []
       },
 
@@ -262,6 +259,8 @@ module.exports = function jasmineNodeTask(grunt) {
 
       // coffee: false, // boolean
     }, this.options());
+
+    options.coverage.report = options.coverage.report || ['lcov'];
 
     fileSrc = this.filesSrc || fileSrc;
 
