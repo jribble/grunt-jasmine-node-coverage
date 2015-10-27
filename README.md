@@ -87,6 +87,9 @@ Type: `boolean`
 
 Default: `false`
 
+Load helpers from the project folder that have the word `helper` and
+have an extension configured in `options.extensions`.
+
 
 #### options.coverage
 
