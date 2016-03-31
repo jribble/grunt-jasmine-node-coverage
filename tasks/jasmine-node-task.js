@@ -67,6 +67,42 @@ module.exports = function jasmineNodeTask(grunt) {
     });
   };
 
+  var includeAllSources = function includeAllSources(cov) {
+    if (!this) {
+      grunt.log.error('includeAllSources() \'this\' should have been bound in istanbulMatcherRun()');
+      return;
+    }
+
+    var instrumenter = this.instrumenter,
+      transformer = this.transformer,
+      matchFn = this.matchFn;
+
+    if (!instrumenter || !transformer || !matchFn || !cov) {
+      grunt.log.error('includeAllSources was set but coverage wasn\'t run.');
+      return;
+    }
+
+    // Source: https://github.com/gotwarlost/istanbul/blob/v0.4.0/lib/command/common/run-with-cover.js
+    // Starting at line 220
+
+    // Files that are not touched by code ran by the test runner is manually instrumented, to
+    // illustrate the missing coverage.
+    matchFn.files.forEach(function (file) {
+      if (!cov[file]) {
+        transformer(fs.readFileSync(file, 'utf-8'), file);
+
+        // When instrumenting the code, istanbul will give each FunctionDeclaration a value of 1 in coverState.s,
+        // presumably to compensate for function hoisting. We need to reset this, as the function was not hoisted,
+        // as it was never loaded.
+        Object.keys(instrumenter.coverState.s).forEach(function (key) {
+          instrumenter.coverState.s[key] = 0;
+        });
+
+        cov[file] = instrumenter.coverState;
+      }
+    });
+  };
+
   var collectReports = function collectReports() {
     var reportFile = path.resolve(reportingDir, options.coverage.reportFile),
       collector = new istanbul.Collector(), // http://gotwarlost.github.io/istanbul/public/apidocs/classes/Collector.html
@@ -74,6 +110,10 @@ module.exports = function jasmineNodeTask(grunt) {
 
     // important: there is no event loop at this point
     // everything that happens in this exit handler MUST be synchronous
+    if (options.coverage && options.coverage.includeAllSources) {
+      includeAllSources(cov);
+    }
+
     grunt.file.mkdir(reportingDir); // yes, do this again since some test runners could clean the dir initially created
 
     grunt.verbose.writeln('Writing coverage object [' + reportFile + ']');
@@ -117,6 +157,13 @@ module.exports = function jasmineNodeTask(grunt) {
     // Hook context to ensure that all requireJS modules get instrumented.
     // Hooking require in isolation does not appear to be sufficient.
     istanbul.hook.hookRunInThisContext(matchFn, transformer, hookOpts);
+
+    // Give includeAllSources() the objects it will need
+    includeAllSources = includeAllSources.bind({
+      instrumenter: instrumenter,
+      transformer: transformer,
+      matchFn: matchFn
+    });
 
     // initialize the global variable to stop mocha from complaining about leaks
     global[coverageVar] = {};
