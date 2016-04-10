@@ -11,7 +11,7 @@
     {
       "name": "Juga Paazmaya",
       "email": "paazmaya@yahoo.com",
-      "url": "http://paazmaya.com"
+      "url": "http://paazmaya.fi"
     }
   ],
   "repository": {
@@ -42,11 +42,11 @@
     "jasmine-node": ">=1.14.5"
   },
   "devDependencies": {
-    "grunt": "~0.4",
-    "grunt-eslint": "~17.3"
+    "grunt": "~1.0",
+    "grunt-eslint": "~18.0"
   },
   "peerDependencies": {
-    "grunt": ">=0.4.0"
+    "grunt": "~1.0"
   },
   "keywords": [
     "gruntplugin",

@@ -5,7 +5,7 @@
 [![Dependency Status](https://david-dm.org/jribble/grunt-jasmine-node-coverage.svg)](https://david-dm.org/jribble/grunt-jasmine-node-coverage)
 [![devDependency Status](https://david-dm.org/jribble/grunt-jasmine-node-coverage/dev-status.svg)](https://david-dm.org/jribble/grunt-jasmine-node-coverage#info=devDependencies)
 [![Build Status](https://travis-ci.org/jribble/grunt-jasmine-node-coverage.svg)](https://travis-ci.org/jribble/grunt-jasmine-node-coverage)
-[![Built with Grunt](http://img.shields.io/badge/Grunt-0.4-blue.svg?style=flat-square)](http://gruntjs.com/)
+[![Built with Grunt](http://img.shields.io/badge/Grunt-1.0-blue.svg?style=flat-square)](http://gruntjs.com/)
 [![Analytics](https://ga-beacon.appspot.com/UA-2643697-15/grunt-jasmine-node-coverage/index?flat)](https://github.com/igrigorik/ga-beacon)
 
 A [Grunt](http://gruntjs.com/) task to run your [Jasmine](http://jasmine.github.io/)
@@ -186,8 +186,8 @@ Type: `string`
 
 Default: `'js'`
 
-Used in regular expressions after dot, inside (), thus | could be used
-
+Used in regular expressions after dot, inside `()`, thus `|` could be used.
+For example matching all `js` and `jsx` file extensions: `'js|jsx'` or `'jsx?'`.
 
 #### options.captureExceptions
 
@@ -275,20 +275,38 @@ npm --versions
 
 ## Release History
 
-* v0.4.1  (2015-02-27)  Reports should be collected from where they were written #42
-* v0.4.0  (2015-02-19)  Other Grunt tasks were not ran when this failed, #40
-* v0.3.2  (2015-02-04)  Fixes for failure cases and documentation, #33, #36, #37 and #38
-* v0.3.1  (2014-11-21)  Installation failed. Should fix #30
-* v0.3.0  (2014-11-09)  Grunt usage as multi task. Fixes #12 and #18
-* v0.2.0  (2014-11-03)  Better Grunt API usage. Fixes #10, #13, #14, #16, #19 and #20
-* v0.1.11  (2014-05-15)  Task name fix for `grunt.renametask` use case
-* v0.1.10  (2014-04-07)  JSHint configuration and task exit fixes
-* v0.1.9  (2014-04-02)  `jasmine_node.options.isVerbose` was not working
-* v0.1.8  (2014-03-03)  Add captureExceptions support and quit on exception
-* v0.1.7  (2013-12-13)  Istanbul update, threshold configuration and JUNit output
-* v0.1.6  (2013-07-26)  Change `isVerbose` option to `verbose`
-* v0.1.5  (2013-07-15)  Initial coverage with Istanbul release, originally forked from `grunt-jasmine-node`
-
+* `v0.5.0` (2016-)
+  - Grunt.js version 1.0 support
+  - ESLint configuration migration to 2.0
+* `v0.4.1` (2015-02-27)
+  - Reports should be collected from where they were written #42
+* `v0.4.0` (2015-02-19)
+  - Other Grunt tasks were not ran when this failed, #40
+* `v0.3.2` (2015-02-04)
+  - Fixes for failure cases and documentation, #33, #36, #37 and #38
+* `v0.3.1` (2014-11-21)
+  - Installation failed
+  - Should fix #30
+* `v0.3.0` (2014-11-09)
+  - Grunt usage as multi task
+  - Fixes #12 and #18
+* `v0.2.0` (2014-11-03)
+  - Better Grunt API usage
+  - Fixes #10, #13, #14, #16, #19 and #20
+* `v0.1.11` (2014-05-15)
+  -  Task name fix for `grunt.renametask` use case
+* `v0.1.10` (2014-04-07)
+  -  JSHint configuration and task exit fixes
+* `v0.1.9` (2014-04-02)
+  - Configuration for `jasmine_node.options.isVerbose` was not working
+* `v0.1.8` (2014-03-03)
+  - Add captureExceptions support and quit on exception
+* `v0.1.7` (2013-12-13)
+  - Istanbul update, threshold configuration and JUNit output
+* `v0.1.6` (2013-07-26)
+  - Change `isVerbose` option to `verbose`
+* `v0.1.5` (2013-07-15)
+  - Initial coverage with Istanbul release, originally forked from `grunt-jasmine-node`
 
 ## License
 
