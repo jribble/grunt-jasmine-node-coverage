@@ -4,8 +4,6 @@ node_js:
   - "0.10"
   - "4.2"
   - "5"
-before_install:
-  - "npm install --global grunt-cli"
 cache:
   directories:
     - node_modules
