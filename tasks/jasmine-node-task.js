@@ -173,16 +173,16 @@ module.exports = function jasmineNodeTask(grunt) {
     // TODO: Move to options.coverage.report list
     if (options.coverage.print !== 'none') {
       switch (options.coverage.print) {
-        case 'detail':
-          reports.push(Report.create('text'));
-          break;
-        case 'both':
-          reports.push(Report.create('text'));
-          reports.push(Report.create('text-summary'));
-          break;
-        default:
-          reports.push(Report.create('text-summary'));
-          break;
+      case 'detail':
+        reports.push(Report.create('text'));
+        break;
+      case 'both':
+        reports.push(Report.create('text'));
+        reports.push(Report.create('text-summary'));
+        break;
+      default:
+        reports.push(Report.create('text-summary'));
+        break;
       }
     }
 

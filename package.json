@@ -27,7 +27,8 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test",
+    "lint": "grunt eslint"
   },
   "files": [
     "bin",
@@ -43,7 +44,7 @@
   },
   "devDependencies": {
     "grunt": "~1.0",
-    "grunt-eslint": "~18.0"
+    "grunt-eslint": "~18.1"
   },
   "peerDependencies": {
     "grunt": "~1.0"
