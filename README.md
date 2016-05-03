@@ -275,9 +275,12 @@ npm --versions
 
 ## Release History
 
-* `v0.5.0` (2016-)
+* `v0.5.0` (2016-05-03)
   - Grunt.js version 1.0 support
   - ESLint configuration migration to 2.0
+  - Remove bin path #29
+  - Update license property for todays requirements
+  - Do not always make `lcov` output
 * `v0.4.1` (2015-02-27)
   - Reports should be collected from where they were written #42
 * `v0.4.0` (2015-02-19)
