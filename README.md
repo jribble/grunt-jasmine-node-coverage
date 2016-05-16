@@ -118,7 +118,8 @@ Istanbul specific configuration. Use empty object,
   collect: [ // false to disable, paths are relative to 'reportDir'
     '*coverage.json'
   ],
-  excludes: []
+  excludes: [],
+  includeAllSources: true // includes files that were't tested
 }
 ```
 
