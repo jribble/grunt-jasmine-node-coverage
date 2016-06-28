@@ -117,7 +117,12 @@ Istanbul specific configuration. Use empty object,
 }
 ```
 
-Please note that `excludes` list will always be added `'**/node_modules/**'` internally.
+Notes:
+
+- The `excludes` list will automatically include `'**/node_modules/**'` internally.
+- Setting the `thresholds` values greater than `0` will cause the task to fail if the specified threshold is not met.
+- The `watermarks` config changes the thresholds at which the reports are displayed in red, yellow and green. It does not affect the outcome of the task.
+- Setting the `report` list will allow different types of istanbul report to be set.
 
 
 #### options.projectRoot
@@ -166,8 +171,71 @@ please be as specific as possible including operating system, `node`, `grunt`, a
 npm --versions
 ```
 
+## Migrating from pre v1 release
+
+If you are updating to v1.0.0, you'll need to update your Gruntfile.
+
+The following example outlines the changes needed. It assumes the following folder structure:
+
+```
+app/
+├── src/
+│   ├── abacus.js
+│   └── calculator.js
+└── test/
+    ├── helpers.js
+    └── specs/
+        ├── abacus.spec.js
+        └── calculator.spec.js
+```
+
+```js
+// v0.5.0 config
+{
+  jasmine_node: {
+    task_name: {
+      options: {
+        match: '.',
+        matchAll: true,
+        specFolders: ['test'],
+        extensions: 'js',
+        specNameMatcher: 'spec',
+        useHelpers: true
+      }
+    }
+  }
+}
+
+// v1.0.0 config
+{
+  jasmine_node: {
+    task_name: {
+      options: {
+        jasmine: {
+          spec_dir: 'test',
+          spec_files: [
+            'specs/*.spec.js'
+          ],
+          helpers: [
+            'helpers.js'
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+Please note that the junit reporter is no longer available. If you are using this reporter and wish to update to v1, please open a new issue and we'll see if we can get it added back in. Even better, submit a PR :smile:
+
 ## Release History
 
+* `v1.0.0` (???)
+  - **Breaking changes alert! Ensure you read the migration guide before updating from v0.5.0**
+  - Migrated from jasmine-node to jasmine proper #35 #48
+  - Support `includeAllSources` istanbul coverage option #45 #50
+  - Support thresholds for passing/failing build #25
+  - Removed junit reporter
 * `v0.5.0` (2016-05-03)
   - Grunt.js version 1.0 support
   - ESLint configuration migration to 2.0
