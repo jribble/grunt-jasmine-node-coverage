@@ -27,22 +27,18 @@ grunt.initConfig({
   jasmine_node: {
     task_name: {
       options: {
-        coverage: {},
         forceExit: true,
-        match: '.',
-        matchAll: false,
-        specFolders: ['tests'],
-        extensions: 'js',
-        specNameMatcher: 'spec',
-        captureExceptions: true,
-        junitreport: {
-          report: false,
-          savePath : './build/reports/jasmine/',
-          useDotNotation: true,
-          consolidate: true
+        coverage: {
+          includeAllSources: true
+        },
+        jasmine: {
+          spec_dir: 'tests',
+          spec_files: [
+            '**/*spec.js'
+          ]
         }
       },
-      src: ['**/*.js']
+      src: ['src/**/*.js']
     }
   }
 });
@@ -60,42 +56,34 @@ form, thus wrapping each configuration in an object inside the `jasmine_node` ro
 
 ### Task configuration options
 
-Most of the options are passed throught to [jasmine-node][].
+#### options.jasmine
 
+Type: `object`
 
-#### options.projectRoot
+Default: see below
 
-Type: `string`
+Jasmine specific configuration. Use empty object,
+`{}` to use the defaults that are shown below.
 
-Default: `process.cwd()`
+```js
+{
+  spec_dir: 'spec',
+  spec_files: ['**/*[sS]pec/.js'],
+  helpers: [],
+  reporter: {}
+}
+```
 
-See http://nodejs.org/api/process.html#process_process_cwd
+See the [jasmine docs](http://jasmine.github.io/2.4/node.html#section-Configuration) for more information on the supported configuration.
 
-
-#### options.specFolders
-
-Type: `array`
-
-Default: `[options.projectRoot]`
-
-List of folders in which any specs are looked for.
-
-
-#### options.useHelpers
-
-Type: `boolean`
-
-Default: `false`
-
-Load helpers from the project folder that have the word `helper` and
-have an extension configured in `options.extensions`.
+The `reporter` property allows the [Jasmine spec reporter](https://github.com/bcaudan/jasmine-spec-reporter) to be configured.
 
 
 #### options.coverage
 
-Type: `boolean|object`
+Type: `object`
 
-Default: `false`
+Default: see below
 
 Istanbul specific configuration. Use empty object,
 `{}` to use the defaults that are shown below.
@@ -103,7 +91,6 @@ Istanbul specific configuration. Use empty object,
 ```js
 {
   reportFile: 'coverage.json',
-  print: 'summary', // none, summary, detail, both
   relativize: true,
   thresholds: {
     statements: 0,
@@ -111,9 +98,17 @@ Istanbul specific configuration. Use empty object,
     lines: 0,
     functions: 0
   },
+  watermarks: {
+    statements: [50, 80],
+    lines: [50, 80],
+    functions: [50, 80],
+    branches: [50, 80],
+  },
+  includeAllSources: false,
   reportDir: 'coverage',
   report: [
-    'lcov'
+    'lcov',
+    'text-summary'
   ],
   collect: [ // false to disable, paths are relative to 'reportDir'
     '*coverage.json'
@@ -125,21 +120,13 @@ Istanbul specific configuration. Use empty object,
 Please note that `excludes` list will always be added `'**/node_modules/**'` internally.
 
 
-#### options.showColors
+#### options.projectRoot
 
-Type: `boolean`
+Type: `string`
 
-Default: `false`
+Default: `process.cwd()`
 
-
-#### options.isVerbose
-
-Type: `boolean`
-
-Default: `true`
-
-When `true` and `options.teamcity` is `false`, will use
-`TerminalVerboseReporter`, else `TerminalReporter`.
+See http://nodejs.org/api/process.html#process_process_cwd
 
 
 #### options.forceExit
@@ -151,116 +138,22 @@ Default: `false`
 Exit on failure by skipping any asyncronous tasks pending.
 
 
-#### options.match
-
-Type: `string`
-
-Default: `'.'`
-
-used in the beginning of regular expression
-
-
-#### options.matchAll
-
-Type: `boolean`
-
-Default: `false`
-
-When true, `options.specFolders` and `options.specNameMatcher` are
-ignored while building the `options.regExpSpec` which is then
-handed down to jasmine-node.
-
-
-#### options.specNameMatcher
-
-Type: `string`
-
-Default: `'spec'`
-
-filename expression
-
-
-#### options.extensions
-
-Type: `string`
-
-Default: `'js'`
-
-Used in regular expressions after dot, inside `()`, thus `|` could be used.
-For example matching all `js` and `jsx` file extensions: `'js|jsx'` or `'jsx?'`.
-
 #### options.captureExceptions
 
 Type: `boolean`
 
 Default: `false`
 
+If set to `true`, will log all uncaught exceptions.
 
-#### options.junitreport
 
-```js
-{
-  report: false,
-  savePath: './reports/',
-  useDotNotation: true,
-  consolidate: true
-}
-```
-
-#### options.teamcity
+#### options.isVerbose
 
 Type: `boolean`
 
 Default: `false`
 
-If `true`, will be using `TeamcityReporter` instead of possible `isVerbose` option
-
-http://gotwarlost.github.io/istanbul/public/apidocs/classes/TeamcityReport.html
-
-
-#### options.growl
-
-Type: `boolean`
-
-Default: `false`
-
-When `true` will be adding `GrowlReporter`.
-
-See https://github.com/mhevery/jasmine-node#growl-notifications
-
-
-#### options.useRequireJs
-
-Type: `boolean`
-
-Default: `false`
-
-
-#### options.onComplete
-
-Type: `function`
-
-Default: `null`
-
-Will be called on Terminal and Teamcity reporters and on RequireJS runner.
-
-
-#### options.includeStackTrace
-
-Type: `boolean`
-
-Default: `false`
-
-Used only in `TerminalReporter`.
-
-
-#### options.coffee
-
-Type: `boolean`
-
-Default: `false`
-
-Seems to be currently (1.4.3) only supported in the command line options of [jasmine-node][].
+When `true`, istanbul will print more information when running.
 
 
 ## Bugs

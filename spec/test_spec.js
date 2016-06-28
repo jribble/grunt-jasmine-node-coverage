@@ -1,4 +1,4 @@
-var Calculator = require('./calculator');
+var Calculator = require('../src/calculator');
 
 describe("Calculator", function () {
   var calculator;

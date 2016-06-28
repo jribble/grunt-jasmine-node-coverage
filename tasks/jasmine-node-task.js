@@ -4,7 +4,8 @@
 module.exports = function jasmineNodeTask(grunt) {
 
   var istanbul = require('istanbul'),
-    jasmine = require('jasmine-node'),
+    Jasmine = require('jasmine'),
+    SpecReporter = require('jasmine-spec-reporter'),
     merge = require('deepmerge'),
     path = require('path'),
     fs = require('fs');
@@ -14,6 +15,7 @@ module.exports = function jasmineNodeTask(grunt) {
     fileSrc = ['**/*.js'],
     options,
     done,
+
     reports = [];
 
   var coverageCollect = function coverageCollect(covPattern, collector) {
@@ -67,10 +69,45 @@ module.exports = function jasmineNodeTask(grunt) {
     });
   };
 
-  var collectReports = function collectReports() {
+  var includeAllSources = function includeAllSources(cov, opts) {
+    if(!opts || !opts.instrumenter || !opts.transformer || !opts.matchFn || !cov) {
+      grunt.log.error('includeAllSources was set but coverage wasn\'t run.');
+      return;
+    }
+
+    var instrumenter = opts.instrumenter,
+      transformer = opts.transformer,
+      matchFn = opts.matchFn;
+
+    // Source: https://github.com/gotwarlost/istanbul/blob/v0.4.0/lib/command/common/run-with-cover.js
+    // Starting at line 220
+
+    // Files that are not touched by code ran by the test runner is manually instrumented, to
+    // illustrate the missing coverage.
+    matchFn.files.forEach(function (file) {
+      if (!cov[file]) {
+        transformer(fs.readFileSync(file, 'utf-8'), file);
+
+        // When instrumenting the code, istanbul will give each FunctionDeclaration a value of 1 in coverState.s,
+        // presumably to compensate for function hoisting. We need to reset this, as the function was not hoisted,
+        // as it was never loaded.
+        Object.keys(instrumenter.coverState.s).forEach(function (key) {
+          instrumenter.coverState.s[key] = 0;
+        });
+
+        cov[file] = instrumenter.coverState;
+      }
+    });
+  };
+
+  var collectReports = function collectReports(opts) {
     var reportFile = path.resolve(reportingDir, options.coverage.reportFile),
       collector = new istanbul.Collector(), // http://gotwarlost.github.io/istanbul/public/apidocs/classes/Collector.html
       cov = global[coverageVar];
+
+    if(options.coverage.includeAllSources) {
+      includeAllSources(cov, opts);
+    }
 
     // important: there is no event loop at this point
     // everything that happens in this exit handler MUST be synchronous
@@ -98,19 +135,19 @@ module.exports = function jasmineNodeTask(grunt) {
     coverageThresholdCheck(collector);
   };
 
-  var exitHandler = function exitHandler() {
+  var exitHandler = function exitHandler(opts) {
     if (typeof global[coverageVar] !== 'object' || Object.keys(global[coverageVar]).length === 0) {
       grunt.log.error('No coverage information was collected, exit without writing coverage information');
       return;
     }
-    collectReports();
+    collectReports(opts);
   };
 
   var istanbulMatcherRun = function istanbulMatcherRun(matchFn) {
 
-    var instrumenter = new istanbul.Instrumenter({coverageVariable: coverageVar}),
-      transformer = instrumenter.instrumentSync.bind(instrumenter),
-      hookOpts = {verbose: options.isVerbose};
+    var instrumenter = new istanbul.Instrumenter({coverageVariable: coverageVar});
+    var transformer = instrumenter.instrumentSync.bind(instrumenter);
+    var hookOpts = {verbose: options.isVerbose};
 
     istanbul.hook.hookRequire(matchFn, transformer, hookOpts);
 
@@ -120,10 +157,18 @@ module.exports = function jasmineNodeTask(grunt) {
 
     // initialize the global variable to stop mocha from complaining about leaks
     global[coverageVar] = {};
+
+    // Return values which will be used later during coverage reporting
+    return {
+      instrumenter: instrumenter,
+      transformer: transformer,
+      matchFn: matchFn
+    };
   };
 
 
-  var runner = function runner() {
+  var runner = function runner(opts) {
+    opts = opts || {};
 
     if (options.captureExceptions) {
       // Grunt will kill the process when it handles an uncaughtException, so we need to
@@ -136,25 +181,23 @@ module.exports = function jasmineNodeTask(grunt) {
         grunt.log.error(e.stack);
       });
     }
-
-    if (options.useHelpers) {
-      jasmine.loadHelpersInFolder(
-        options.projectRoot,
-        new RegExp('helpers?\\.(' + options.extensions + ')$', 'i')
-      );
-    }
-
     try {
-      jasmine.executeSpecsInFolder(options);
+      var jasmine = new Jasmine();
+      jasmine.loadConfig(options.jasmine);
+      jasmine.addReporter(new SpecReporter(options.jasmine.reporter));
+      jasmine.onComplete(function(passed) {
+        options.onComplete(passed, opts);
+      });
+      jasmine.execute();
     }
     catch (e) {
-      if (options.forceExit) {
-        process.exit(1);
+      grunt.log.error('Jasmine runner failed: ' + e.stack);
+      if(options.forceExit) {
+        throw e;
       }
       else {
-        done(1);
+        done(e);
       }
-      grunt.log.error('Failed to execute "jasmine.executeSpecsInFolder": ' + e.stack);
     }
   };
 
@@ -167,24 +210,11 @@ module.exports = function jasmineNodeTask(grunt) {
 
     var reportClassNames = options.coverage.report;
     reportClassNames.forEach(function eachReport(reportClassName) {
-      reports.push(Report.create(reportClassName, {dir: reportingDir}));
+      reports.push(Report.create(reportClassName, {
+        dir: reportingDir,
+        watermarks: options.coverage.watermarks
+      }));
     });
-
-    // TODO: Move to options.coverage.report list
-    if (options.coverage.print !== 'none') {
-      switch (options.coverage.print) {
-      case 'detail':
-        reports.push(Report.create('text'));
-        break;
-      case 'both':
-        reports.push(Report.create('text'));
-        reports.push(Report.create('text-summary'));
-        break;
-      default:
-        reports.push(Report.create('text-summary'));
-        break;
-      }
-    }
 
     var excludes = options.coverage.excludes || [];
     excludes.push('**/node_modules/**');
@@ -200,8 +230,8 @@ module.exports = function jasmineNodeTask(grunt) {
         grunt.fail.warn(err);
         return;
       }
-      istanbulMatcherRun(matchFn);
-      runner();
+      var runnerOpts = istanbulMatcherRun(matchFn);
+      runner(runnerOpts);
     });
 
   };
@@ -213,18 +243,19 @@ module.exports = function jasmineNodeTask(grunt) {
 
       // Used only in this plugin, thus can be refactored out
       projectRoot: process.cwd(), // string
-      useHelpers: false, // boolean
       forceExit: false, // boolean, exit on failure
-      match: '.', // string, used in the beginning of regular expression
-      matchAll: false, // boolean, if false, the specNameMatcher is used, true will just be ''
-      specNameMatcher: 'spec', // string, filename expression
-      extensions: 'js', // string, used in regular expressions after dot, inside (), thus | could be used
       captureExceptions: false, // boolean
+      isVerbose: false,
+
+      // Jasmine options
+      jasmine: {
+        spec_dir: 'spec',
+        reporter: {}
+      },
 
       // Coverage options
       coverage: { // boolean|object
         reportFile: 'coverage.json',
-        print: 'summary', // none, summary, detail, both
         collect: [ // paths relative to 'reportDir'
           'coverage*.json'
         ], // coverage report file matching patters
@@ -235,64 +266,34 @@ module.exports = function jasmineNodeTask(grunt) {
           lines: 0,
           functions: 0
         },
+        includeAllSources: false,
         reportDir: 'coverage',
         excludes: []
-      },
-
-      // jasmine-node specific options
-      specFolders: null, // array
-      onComplete: null, // function
-      isVerbose: true, // boolean, TODO: start using grunt.verbose
-      showColors: false, // boolean
-      teamcity: false, // boolean
-      useRequireJs: false, // boolean
-      regExpSpec: null, // RegExp written based on the other options
-      gowl: false, // boolean, use jasmineEnv.addReporter(new jasmine.GrowlReporter());
-      junitreport: {
-        report: false, // boolean, create JUnit XML reports
-        savePath: './reports/',
-        useDotNotation: true,
-        consolidate: true
-      },
-      includeStackTrace: false, // boolean
-      growl: false // boolean
-
-      // coffee: false, // boolean
+      }
     }, this.options());
 
-    options.coverage.report = options.coverage.report || ['lcov'];
+    options.jasmine.spec_files = options.jasmine.spec_files || ['**/*[sS]pec.js'];
+
+    options.coverage.report = options.coverage.report || ['lcov', 'text-summary'];
 
     fileSrc = this.filesSrc || fileSrc;
 
     // Tell grunt this task is asynchronous.
     done = this.async();
 
-    if (options.specFolders === null) {
-      options.specFolders = [options.projectRoot];
-    }
-
-    // Default value in jasmine-node is 'new RegExp(".(js)$", "i")'
-    if (options.regExpSpec === null) {
-      options.regExpSpec = new RegExp(
-        options.match + (options.matchAll ? '' :
-        // '(' + options.specFolders.join('|').replace(/\//g, '\\/') + ')\\/' +
-        options.specNameMatcher + '\\.') + '(' + options.extensions + ')$', 'i');
-    }
-
     if (typeof options.onComplete !== 'function') {
-      options.onComplete = function onComplete(runner) {
+      options.onComplete = function onComplete(passed, opts) {
         var exitCode = 1;
-        var failedCount = runner.results().failedCount;
         grunt.log.writeln('');
-        if (failedCount === 0) {
+        if (passed) {
           exitCode = 0;
           if (options.coverage !== false) {
-            exitHandler();
+            exitHandler(opts);
           }
         }
 
         if (options.forceExit && exitCode === 1) {
-          grunt.fail.warn(failedCount + ' test(s) failed.', exitCode);
+          grunt.fail.warn('Test runner failed.', exitCode);
         }
         done(exitCode === 0);
       };
