@@ -273,8 +273,9 @@ module.exports = function jasmineNodeTask(grunt) {
     }, this.options());
 
     options.jasmine.spec_files = options.jasmine.spec_files || ['**/*[sS]pec.js'];
-
-    options.coverage.report = options.coverage.report || ['lcov', 'text-summary'];
+    if(options.coverage !== false) {
+      options.coverage.report = options.coverage.report || ['lcov', 'text-summary'];
+    }
 
     fileSrc = this.filesSrc || fileSrc;
 
