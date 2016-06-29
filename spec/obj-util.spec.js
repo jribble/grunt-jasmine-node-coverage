@@ -1,4 +1,4 @@
-var util = require('./obj-util.js');
+var util = require('../src/obj-util.js');
 
 describe('obj-util', function() {
    it('can identify an array', function () {

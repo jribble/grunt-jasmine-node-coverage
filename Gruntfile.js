@@ -14,21 +14,36 @@ module.exports = function (grunt) {
       all: {
         options: {
           coverage: {
-            print: 'detail'
+            watermarks: {
+              statements: [90, 95],
+              lines: [90, 95],
+              functions: [90, 95],
+              branches: [90, 95],
+            },
+            thresholds: {
+              statements: 90,
+              lines: 90,
+              functions: 90,
+              branches: 90
+            },
+            // Uncomment line below to include
+            // calculator2.js file in coverage reports
+            // includeAllSources: true
           },
           isVerbose: true,
-          showColors: true,
-
           forceExit: true,
-          match: '.',
-          matchAll: false,
-          specFolders: ['spec'],
-          extensions: 'js',
-          specNameMatcher: 'spec'
+          jasmine: {
+            spec_dir: 'spec',
+            spec_files: [
+              '*spec.js'
+            ],
+            reporter: {
+              colors: true
+            }
+          }
         },
         src: [
-          'spec/calculator.js',
-          'spec/obj-util.js'
+          'src/*.js'
         ]
       }
     }

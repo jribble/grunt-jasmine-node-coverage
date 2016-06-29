@@ -27,22 +27,18 @@ grunt.initConfig({
   jasmine_node: {
     task_name: {
       options: {
-        coverage: {},
         forceExit: true,
-        match: '.',
-        matchAll: false,
-        specFolders: ['tests'],
-        extensions: 'js',
-        specNameMatcher: 'spec',
-        captureExceptions: true,
-        junitreport: {
-          report: false,
-          savePath : './build/reports/jasmine/',
-          useDotNotation: true,
-          consolidate: true
+        coverage: {
+          includeAllSources: true
+        },
+        jasmine: {
+          spec_dir: 'tests',
+          spec_files: [
+            '**/*spec.js'
+          ]
         }
       },
-      src: ['**/*.js']
+      src: ['src/**/*.js']
     }
   }
 });
@@ -60,7 +56,73 @@ form, thus wrapping each configuration in an object inside the `jasmine_node` ro
 
 ### Task configuration options
 
-Most of the options are passed throught to [jasmine-node][].
+#### options.jasmine
+
+Type: `object`
+
+Default: see below
+
+Jasmine specific configuration. Use empty object,
+`{}` to use the defaults that are shown below.
+
+```js
+{
+  spec_dir: 'spec',
+  spec_files: ['**/*[sS]pec/.js'],
+  helpers: [],
+  reporter: {}
+}
+```
+
+See the [jasmine docs](http://jasmine.github.io/2.4/node.html#section-Configuration) for more information on the supported configuration.
+
+The `reporter` property allows the [Jasmine spec reporter](https://github.com/bcaudan/jasmine-spec-reporter) to be configured.
+
+
+#### options.coverage
+
+Type: `object`
+
+Default: see below
+
+Istanbul specific configuration. Use empty object,
+`{}` to use the defaults that are shown below.
+
+```js
+{
+  reportFile: 'coverage.json',
+  relativize: true,
+  thresholds: {
+    statements: 0,
+    branches: 0,
+    lines: 0,
+    functions: 0
+  },
+  watermarks: {
+    statements: [50, 80],
+    lines: [50, 80],
+    functions: [50, 80],
+    branches: [50, 80],
+  },
+  includeAllSources: false,
+  reportDir: 'coverage',
+  report: [
+    'lcov',
+    'text-summary'
+  ],
+  collect: [ // false to disable, paths are relative to 'reportDir'
+    '*coverage.json'
+  ],
+  excludes: []
+}
+```
+
+Notes:
+
+- The `excludes` list will automatically include `'**/node_modules/**'` internally.
+- Setting the `thresholds` values greater than `0` will cause the task to fail if the specified threshold is not met.
+- The `watermarks` config changes the thresholds at which the reports are displayed in red, yellow and green. It does not affect the outcome of the task.
+- Setting the `report` list will allow different types of istanbul report to be set.
 
 
 #### options.projectRoot
@@ -72,76 +134,6 @@ Default: `process.cwd()`
 See http://nodejs.org/api/process.html#process_process_cwd
 
 
-#### options.specFolders
-
-Type: `array`
-
-Default: `[options.projectRoot]`
-
-List of folders in which any specs are looked for.
-
-
-#### options.useHelpers
-
-Type: `boolean`
-
-Default: `false`
-
-Load helpers from the project folder that have the word `helper` and
-have an extension configured in `options.extensions`.
-
-
-#### options.coverage
-
-Type: `boolean|object`
-
-Default: `false`
-
-Istanbul specific configuration. Use empty object,
-`{}` to use the defaults that are shown below.
-
-```js
-{
-  reportFile: 'coverage.json',
-  print: 'summary', // none, summary, detail, both
-  relativize: true,
-  thresholds: {
-    statements: 0,
-    branches: 0,
-    lines: 0,
-    functions: 0
-  },
-  reportDir: 'coverage',
-  report: [
-    'lcov'
-  ],
-  collect: [ // false to disable, paths are relative to 'reportDir'
-    '*coverage.json'
-  ],
-  excludes: []
-}
-```
-
-Please note that `excludes` list will always be added `'**/node_modules/**'` internally.
-
-
-#### options.showColors
-
-Type: `boolean`
-
-Default: `false`
-
-
-#### options.isVerbose
-
-Type: `boolean`
-
-Default: `true`
-
-When `true` and `options.teamcity` is `false`, will use
-`TerminalVerboseReporter`, else `TerminalReporter`.
-
-
 #### options.forceExit
 
 Type: `boolean`
@@ -151,116 +143,22 @@ Default: `false`
 Exit on failure by skipping any asyncronous tasks pending.
 
 
-#### options.match
-
-Type: `string`
-
-Default: `'.'`
-
-used in the beginning of regular expression
-
-
-#### options.matchAll
-
-Type: `boolean`
-
-Default: `false`
-
-When true, `options.specFolders` and `options.specNameMatcher` are
-ignored while building the `options.regExpSpec` which is then
-handed down to jasmine-node.
-
-
-#### options.specNameMatcher
-
-Type: `string`
-
-Default: `'spec'`
-
-filename expression
-
-
-#### options.extensions
-
-Type: `string`
-
-Default: `'js'`
-
-Used in regular expressions after dot, inside `()`, thus `|` could be used.
-For example matching all `js` and `jsx` file extensions: `'js|jsx'` or `'jsx?'`.
-
 #### options.captureExceptions
 
 Type: `boolean`
 
 Default: `false`
 
+If set to `true`, will log all uncaught exceptions.
 
-#### options.junitreport
 
-```js
-{
-  report: false,
-  savePath: './reports/',
-  useDotNotation: true,
-  consolidate: true
-}
-```
-
-#### options.teamcity
+#### options.isVerbose
 
 Type: `boolean`
 
 Default: `false`
 
-If `true`, will be using `TeamcityReporter` instead of possible `isVerbose` option
-
-http://gotwarlost.github.io/istanbul/public/apidocs/classes/TeamcityReport.html
-
-
-#### options.growl
-
-Type: `boolean`
-
-Default: `false`
-
-When `true` will be adding `GrowlReporter`.
-
-See https://github.com/mhevery/jasmine-node#growl-notifications
-
-
-#### options.useRequireJs
-
-Type: `boolean`
-
-Default: `false`
-
-
-#### options.onComplete
-
-Type: `function`
-
-Default: `null`
-
-Will be called on Terminal and Teamcity reporters and on RequireJS runner.
-
-
-#### options.includeStackTrace
-
-Type: `boolean`
-
-Default: `false`
-
-Used only in `TerminalReporter`.
-
-
-#### options.coffee
-
-Type: `boolean`
-
-Default: `false`
-
-Seems to be currently (1.4.3) only supported in the command line options of [jasmine-node][].
+When `true`, istanbul will print more information when running.
 
 
 ## Bugs
@@ -273,8 +171,71 @@ please be as specific as possible including operating system, `node`, `grunt`, a
 npm --versions
 ```
 
+## Migrating from pre v1 release
+
+If you are updating to v1.0.0, you'll need to update your Gruntfile.
+
+The following example outlines the changes needed. It assumes the following folder structure:
+
+```
+app/
+├── src/
+│   ├── abacus.js
+│   └── calculator.js
+└── test/
+    ├── helpers.js
+    └── specs/
+        ├── abacus.spec.js
+        └── calculator.spec.js
+```
+
+```js
+// v0.5.0 config
+{
+  jasmine_node: {
+    task_name: {
+      options: {
+        match: '.',
+        matchAll: true,
+        specFolders: ['test'],
+        extensions: 'js',
+        specNameMatcher: 'spec',
+        useHelpers: true
+      }
+    }
+  }
+}
+
+// v1.0.0 config
+{
+  jasmine_node: {
+    task_name: {
+      options: {
+        jasmine: {
+          spec_dir: 'test',
+          spec_files: [
+            'specs/*.spec.js'
+          ],
+          helpers: [
+            'helpers.js'
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+Please note that the junit reporter is no longer available. If you are using this reporter and wish to update to v1, please open a new issue and we'll see if we can get it added back in. Even better, submit a PR :smile:
+
 ## Release History
 
+* `v1.0.0` (???)
+  - **Breaking changes alert! Ensure you read the migration guide before updating from v0.5.0**
+  - Migrated from jasmine-node to jasmine proper #35 #48
+  - Support `includeAllSources` istanbul coverage option #45 #50
+  - Support thresholds for passing/failing build #25
+  - Removed junit reporter
 * `v0.5.0` (2016-05-03)
   - Grunt.js version 1.0 support
   - ESLint configuration migration to 2.0
