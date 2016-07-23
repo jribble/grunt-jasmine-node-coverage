@@ -1,24 +1,27 @@
 
 'use strict';
 
+// Native dependencies
+const fs = require('fs'),
+  path = require('path');
+
+// 3rd party dependencies
+const istanbul = require('istanbul'),
+  Jasmine = require('jasmine'),
+  SpecReporter = require('jasmine-spec-reporter'),
+  deepmerge = require('deepmerge');
+
 module.exports = function jasmineNodeTask(grunt) {
 
-  var istanbul = require('istanbul'),
-    Jasmine = require('jasmine'),
-    SpecReporter = require('jasmine-spec-reporter'),
-    merge = require('deepmerge'),
-    path = require('path'),
-    fs = require('fs');
+  const reports = [];
 
   var reportingDir,
     coverageVar = '$$cov_' + new Date().getTime() + '$$',
     fileSrc = ['**/*.js'],
     options,
-    done,
+    done;
 
-    reports = [];
-
-  var coverageCollect = function coverageCollect(covPattern, collector) {
+  const coverageCollect = function coverageCollect(covPattern, collector) {
 
     // The pattern should be relative to the directory in which the reports are written
     var coverageFiles = grunt.file.expand(path.resolve(reportingDir, covPattern));
@@ -44,7 +47,7 @@ module.exports = function jasmineNodeTask(grunt) {
     });
   };
 
-  var coverageThresholdCheck = function coverageThresholdCheck(collector) {
+  const coverageThresholdCheck = function coverageThresholdCheck(collector) {
 
     // http://gotwarlost.github.io/istanbul/public/apidocs/classes/ObjectUtils.html
     var objUtils = istanbul.utils;
@@ -69,7 +72,7 @@ module.exports = function jasmineNodeTask(grunt) {
     });
   };
 
-  var includeAllSources = function includeAllSources(cov, opts) {
+  const includeAllSources = function includeAllSources(cov, opts) {
     if (!opts || !opts.instrumenter || !opts.transformer || !opts.matchFn || !cov) {
       grunt.log.error('includeAllSources was set but coverage wasn\'t run.');
       return;
@@ -100,7 +103,7 @@ module.exports = function jasmineNodeTask(grunt) {
     });
   };
 
-  var collectReports = function collectReports(opts) {
+  const collectReports = function collectReports(opts) {
     var reportFile = path.resolve(reportingDir, options.coverage.reportFile),
       collector = new istanbul.Collector(), // http://gotwarlost.github.io/istanbul/public/apidocs/classes/Collector.html
       cov = global[coverageVar];
@@ -115,7 +118,7 @@ module.exports = function jasmineNodeTask(grunt) {
 
     grunt.verbose.writeln('Writing coverage object [' + reportFile + ']');
 
-    fs.writeFileSync(reportFile, JSON.stringify(cov), 'utf8');
+    fs.writeFileSync(reportFile, JSON.stringify(cov, null, ' '), 'utf8');
 
     if (options.coverage.collect !== false) {
       options.coverage.collect.forEach(function eachCollect(covPattern) {
@@ -135,7 +138,7 @@ module.exports = function jasmineNodeTask(grunt) {
     coverageThresholdCheck(collector);
   };
 
-  var exitHandler = function exitHandler(opts) {
+  const exitHandler = function exitHandler(opts) {
     if (typeof global[coverageVar] !== 'object' || Object.keys(global[coverageVar]).length === 0) {
       grunt.log.error('No coverage information was collected, exit without writing coverage information');
       return;
@@ -143,11 +146,11 @@ module.exports = function jasmineNodeTask(grunt) {
     collectReports(opts);
   };
 
-  var istanbulMatcherRun = function istanbulMatcherRun(matchFn) {
+  const istanbulMatcherRun = function istanbulMatcherRun(matchFn) {
 
-    var instrumenter = new istanbul.Instrumenter({coverageVariable: coverageVar});
-    var transformer = instrumenter.instrumentSync.bind(instrumenter);
-    var hookOpts = {verbose: options.isVerbose};
+    const instrumenter = new istanbul.Instrumenter({coverageVariable: coverageVar});
+    const transformer = instrumenter.instrumentSync.bind(instrumenter);
+    const hookOpts = {verbose: options.isVerbose};
 
     istanbul.hook.hookRequire(matchFn, transformer, hookOpts);
 
@@ -167,7 +170,7 @@ module.exports = function jasmineNodeTask(grunt) {
   };
 
 
-  var runner = function runner(opts) {
+  const runner = function runner(opts) {
     opts = opts || {};
 
     if (options.captureExceptions) {
@@ -182,7 +185,7 @@ module.exports = function jasmineNodeTask(grunt) {
       });
     }
     try {
-      var jasmine = new Jasmine();
+      const jasmine = new Jasmine();
       jasmine.loadConfig(options.jasmine);
       jasmine.addReporter(new SpecReporter(options.jasmine.reporter));
       jasmine.onComplete(function(passed) {
@@ -201,14 +204,14 @@ module.exports = function jasmineNodeTask(grunt) {
     }
   };
 
-  var doCoverage = function doCoverage() {
+  const doCoverage = function doCoverage() {
 
     // set up require hooks to instrument files as they are required
-    var Report = istanbul.Report;
+    const Report = istanbul.Report;
 
     grunt.file.mkdir(reportingDir); // ensure we fail early if we cannot do this
 
-    var reportClassNames = options.coverage.report;
+    const reportClassNames = options.coverage.report;
     reportClassNames.forEach(function eachReport(reportClassName) {
       reports.push(Report.create(reportClassName, {
         dir: reportingDir,
@@ -216,7 +219,7 @@ module.exports = function jasmineNodeTask(grunt) {
       }));
     });
 
-    var excludes = options.coverage.excludes || [];
+    const excludes = options.coverage.excludes || [];
     excludes.push('**/node_modules/**');
 
     // http://gotwarlost.github.io/istanbul/public/apidocs/classes/Istanbul.html#method_matcherFor
@@ -239,7 +242,7 @@ module.exports = function jasmineNodeTask(grunt) {
   grunt.registerMultiTask('jasmine_node', 'Runs jasmine-node with Istanbul code coverage', function registerGrunt() {
 
     // Default options. Once Grunt does recursive merge, use that, maybe 0.4.6
-    options = merge({
+    options = deepmerge({
 
       // Used only in this plugin, thus can be refactored out
       projectRoot: process.cwd(), // string

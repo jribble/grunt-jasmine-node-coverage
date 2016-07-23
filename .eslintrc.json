@@ -118,6 +118,7 @@
     "object-curly-spacing": 2,
     "one-var": 0,
     "operator-assignment": [2, "always"],
+    "prefer-const": 2,
     "quote-props": 0,
     "quote-props": [1, "as-needed"],
     "quotes": [2, "single"],
@@ -137,6 +138,9 @@
     "wrap-iife": [2, "inside"],
     "wrap-regex": 0,
     "yoda": [2, "never"]
+  },
+  "parserOptions": {
+    "ecmaVersion": 6
   },
   "env": {
     "browser": true,
