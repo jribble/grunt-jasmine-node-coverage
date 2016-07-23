@@ -12,6 +12,8 @@ A [Grunt](http://gruntjs.com/) task to run your [Jasmine](http://jasmine.github.
 feature suite using [jasmine-npm](https://github.com/jasmine/jasmine-npm)
 and [Istanbul](https://github.com/gotwarlost/istanbul) for code coverage reports.
 
+The minimum supported Node.js version is `4.2.0` (LTS).
+
 ## Getting Started
 
 Install this grunt plugin next to your project's `Gruntfile.js` with:
@@ -232,6 +234,7 @@ Please note that the junit reporter is no longer available. If you are using thi
 
 * `v1.0.0` (2016-07-23)
   - **Breaking changes alert! Ensure you read the migration guide before updating from previous versions**
+  - Minimum supported Node.js version is `4.2.0` (LTS), removed testing against `0.10`
   - Migrated from `jasmine-node` to `jasmine-npm` #35 #48
   - Support `includeAllSources` istanbul coverage option #45 #50
   - Support thresholds for passing/failing build #25

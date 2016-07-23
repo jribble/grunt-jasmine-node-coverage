@@ -24,7 +24,7 @@
   "license": "MIT",
   "main": "tasks/jasmine-node-task.js",
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=4.2.0"
   },
   "scripts": {
     "test": "grunt test",
