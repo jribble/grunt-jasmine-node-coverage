@@ -70,7 +70,7 @@ module.exports = function jasmineNodeTask(grunt) {
   };
 
   var includeAllSources = function includeAllSources(cov, opts) {
-    if(!opts || !opts.instrumenter || !opts.transformer || !opts.matchFn || !cov) {
+    if (!opts || !opts.instrumenter || !opts.transformer || !opts.matchFn || !cov) {
       grunt.log.error('includeAllSources was set but coverage wasn\'t run.');
       return;
     }
@@ -105,7 +105,7 @@ module.exports = function jasmineNodeTask(grunt) {
       collector = new istanbul.Collector(), // http://gotwarlost.github.io/istanbul/public/apidocs/classes/Collector.html
       cov = global[coverageVar];
 
-    if(options.coverage.includeAllSources) {
+    if (options.coverage.includeAllSources) {
       includeAllSources(cov, opts);
     }
 
@@ -192,7 +192,7 @@ module.exports = function jasmineNodeTask(grunt) {
     }
     catch (e) {
       grunt.log.error('Jasmine runner failed: ' + e.stack);
-      if(options.forceExit) {
+      if (options.forceExit) {
         throw e;
       }
       else {
@@ -273,7 +273,7 @@ module.exports = function jasmineNodeTask(grunt) {
     }, this.options());
 
     options.jasmine.spec_files = options.jasmine.spec_files || ['**/*[sS]pec.js'];
-    if(options.coverage !== false) {
+    if (options.coverage !== false) {
       options.coverage.report = options.coverage.report || ['lcov', 'text-summary'];
     }
 
