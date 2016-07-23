@@ -1,6 +1,6 @@
 # grunt-jasmine-node-coverage
 
-> Runs jasmine-node with Istanbul code coverage
+> Runs jasmine with Istanbul code coverage
 
 [![Dependency Status](https://david-dm.org/jribble/grunt-jasmine-node-coverage.svg)](https://david-dm.org/jribble/grunt-jasmine-node-coverage)
 [![devDependency Status](https://david-dm.org/jribble/grunt-jasmine-node-coverage/dev-status.svg)](https://david-dm.org/jribble/grunt-jasmine-node-coverage#info=devDependencies)
@@ -9,7 +9,7 @@
 [![Analytics](https://ga-beacon.appspot.com/UA-2643697-15/grunt-jasmine-node-coverage/index?flat)](https://github.com/igrigorik/ga-beacon)
 
 A [Grunt](http://gruntjs.com/) task to run your [Jasmine](http://jasmine.github.io/)
-feature suite using [jasmine-node][]
+feature suite using [jasmine-npm](https://github.com/jasmine/jasmine-npm)
 and [Istanbul](https://github.com/gotwarlost/istanbul) for code coverage reports.
 
 ## Getting Started
@@ -230,9 +230,9 @@ Please note that the junit reporter is no longer available. If you are using thi
 
 ## Release History
 
-* `v1.0.0` (???)
-  - **Breaking changes alert! Ensure you read the migration guide before updating from v0.5.0**
-  - Migrated from jasmine-node to jasmine proper #35 #48
+* `v1.0.0` (2016-07-23)
+  - **Breaking changes alert! Ensure you read the migration guide before updating from previous versions**
+  - Migrated from `jasmine-node` to `jasmine-npm` #35 #48
   - Support `includeAllSources` istanbul coverage option #45 #50
   - Support thresholds for passing/failing build #25
   - Removed junit reporter
