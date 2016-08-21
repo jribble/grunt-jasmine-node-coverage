@@ -72,13 +72,17 @@ Jasmine specific configuration. Use empty object,
   spec_dir: 'spec',
   spec_files: ['**/*[sS]pec/.js'],
   helpers: [],
-  reporter: {}
+  reporters: {
+    spec: {}
+  }
 }
 ```
 
 See the [jasmine docs](http://jasmine.github.io/2.4/node.html#section-Configuration) for more information on the supported configuration.
 
-The `reporter` property allows the [Jasmine spec reporter](https://github.com/bcaudan/jasmine-spec-reporter) to be configured.
+The `reporters` property allows either `spec` property for Configuring the [Jasmine spec reporter](https://github.com/bcaudan/jasmine-spec-reporter) or `teamcity: true` for activating [Jasmine Reporters - TeamCityReporter](https://github.com/larrymyers/jasmine-reporters).
+
+If `teamcity` reporter is enabled `spec` reporter will be disabled and `teamcity` reporter will be added to the coverage reporters as well.
 
 
 #### options.coverage

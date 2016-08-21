@@ -37,8 +37,12 @@ module.exports = function (grunt) {
             spec_files: [
               '*spec.js'
             ],
-            reporter: {
-              colors: true
+            reporters: {
+              spec: {
+                colors: true
+              },
+              // Uncomment line below to activate teamcity reporter
+              //teamcity: true
             }
           }
         },

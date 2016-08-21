@@ -9,7 +9,8 @@ var fs = require('fs'),
 var istanbul = require('istanbul'),
   Jasmine = require('jasmine'),
   SpecReporter = require('jasmine-spec-reporter'),
-  deepmerge = require('deepmerge');
+  deepmerge = require('deepmerge'),
+  reporters = require('jasmine-reporters');
 
 module.exports = function jasmineNodeTask(grunt) {
 
@@ -169,6 +170,21 @@ module.exports = function jasmineNodeTask(grunt) {
     };
   };
 
+  var addReporters = function addReporters(jasmine) {
+    var ropts = options.jasmine.reporters;
+
+    var reporter;
+    if (ropts.teamcity) {
+      reporter = new reporters.TeamCityReporter(); // no options to set
+      reporter.name = 'TeamCity Reporter';
+      jasmine.addReporter(reporter);
+    }
+    else {
+      reporter = new SpecReporter(ropts.spec);
+      reporter.name = 'Spec Reporter';
+      jasmine.addReporter(reporter);
+    }
+  };
 
   var runner = function runner(opts) {
     opts = opts || {};
@@ -187,7 +203,7 @@ module.exports = function jasmineNodeTask(grunt) {
     try {
       var jasmine = new Jasmine();
       jasmine.loadConfig(options.jasmine);
-      jasmine.addReporter(new SpecReporter(options.jasmine.reporter));
+      addReporters(jasmine);
       jasmine.onComplete(function(passed) {
         options.onComplete(passed, opts);
       });
@@ -212,6 +228,12 @@ module.exports = function jasmineNodeTask(grunt) {
     grunt.file.mkdir(reportingDir); // ensure we fail early if we cannot do this
 
     var reportClassNames = options.coverage.report;
+
+    // Add teamcity to the coverage reporter if it was set as jasmine reporter
+    if (options.jasmine.reporters.teamcity && reportClassNames.indexOf('teamcity') === -1) {
+      reportClassNames = reportClassNames.concat(['teamcity']);
+    }
+
     reportClassNames.forEach(function eachReport(reportClassName) {
       reports.push(Report.create(reportClassName, {
         dir: reportingDir,
@@ -253,7 +275,9 @@ module.exports = function jasmineNodeTask(grunt) {
       // Jasmine options
       jasmine: {
         spec_dir: 'spec',
-        reporter: {}
+        reporters: {
+          spec: {}
+        }
       },
 
       // Coverage options
@@ -274,6 +298,13 @@ module.exports = function jasmineNodeTask(grunt) {
         excludes: []
       }
     }, this.options());
+
+    // Support old config with Spec reporter only
+    if (options.jasmine.reporter) {
+      options.jasmine.reporters = {
+        spec: options.jasmine.reporter
+      };
+    }
 
     options.jasmine.spec_files = options.jasmine.spec_files || ['**/*[sS]pec.js'];
     if (options.coverage !== false) {
