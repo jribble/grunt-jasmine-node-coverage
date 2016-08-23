@@ -88,14 +88,14 @@ module.exports = function jasmineNodeTask(grunt) {
 
     // Files that are not touched by code ran by the test runner is manually instrumented, to
     // illustrate the missing coverage.
-    matchFn.files.forEach(function (file) {
+    matchFn.files.forEach(function eachMatch(file) {
       if (!cov[file]) {
         transformer(fs.readFileSync(file, 'utf-8'), file);
 
         // When instrumenting the code, istanbul will give each FunctionDeclaration a value of 1 in coverState.s,
         // presumably to compensate for function hoisting. We need to reset this, as the function was not hoisted,
         // as it was never loaded.
-        Object.keys(instrumenter.coverState.s).forEach(function (key) {
+        Object.keys(instrumenter.coverState.s).forEach(function eachKey(key) {
           instrumenter.coverState.s[key] = 0;
         });
 
@@ -106,7 +106,8 @@ module.exports = function jasmineNodeTask(grunt) {
 
   var collectReports = function collectReports(opts) {
     var reportFile = path.resolve(reportingDir, options.coverage.reportFile),
-      collector = new istanbul.Collector(), // http://gotwarlost.github.io/istanbul/public/apidocs/classes/Collector.html
+      // http://gotwarlost.github.io/istanbul/public/apidocs/classes/Collector.html
+      collector = new istanbul.Collector(),
       cov = global[coverageVar];
 
     if (options.coverage.includeAllSources) {
@@ -204,18 +205,18 @@ module.exports = function jasmineNodeTask(grunt) {
       var jasmine = new Jasmine();
       jasmine.loadConfig(options.jasmine);
       addReporters(jasmine);
-      jasmine.onComplete(function(passed) {
+      jasmine.onComplete(function jasmineComplete(passed) {
         options.onComplete(passed, opts);
       });
       jasmine.execute();
     }
-    catch (e) {
-      grunt.log.error('Jasmine runner failed: ' + e.stack);
+    catch (error) {
+      grunt.log.error('Jasmine runner failed: ' + error.stack);
       if (options.forceExit) {
-        throw e;
+        throw error;
       }
       else {
-        done(e);
+        done(error);
       }
     }
   };

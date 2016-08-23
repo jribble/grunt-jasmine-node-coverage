@@ -12,7 +12,7 @@ A [Grunt](http://gruntjs.com/) task to run your [Jasmine](http://jasmine.github.
 feature suite using [jasmine-npm](https://github.com/jasmine/jasmine-npm)
 and [Istanbul](https://github.com/gotwarlost/istanbul) for code coverage reports.
 
-The minimum supported Node.js version is `4.2.0` (LTS).
+The minimum supported Node.js version is `4.2.0` (LTS), and while works also in `0.10.x`, no quarantees are given.
 
 ## Getting Started
 
@@ -81,12 +81,14 @@ Jasmine specific configuration. Use empty object,
 See the [jasmine docs](http://jasmine.github.io/2.4/node.html#section-Configuration) for more information on the supported configuration.
 
 The `reporters` property allows the one of the following properties:
+
 * `spec`: used to configure the [Jasmine spec reporter](https://github.com/bcaudan/jasmine-spec-reporter).
 * `teamcity` set it to `true` in order to use [Jasmine Reporters - TeamCityReporter](https://github.com/larrymyers/jasmine-reporters).
 
 If `teamcity` reporter is set `spec` reporter will be disabled and `teamcity` reporter will be added to the coverage reporters as well.
 
 Example of using `teamcity` reporter:
+
 ```js
 {
   spec_dir: 'spec',
@@ -138,10 +140,10 @@ Istanbul specific configuration. Use empty object,
 
 Notes:
 
-- The `excludes` list will automatically include `'**/node_modules/**'` internally.
-- Setting the `thresholds` values greater than `0` will cause the task to fail if the specified threshold is not met.
-- The `watermarks` config changes the thresholds at which the reports are displayed in red, yellow and green. It does not affect the outcome of the task.
-- Setting the `report` list will allow different types of istanbul report to be set.
+* The `excludes` list will automatically include `'**/node_modules/**'` internally.
+* Setting the `thresholds` values greater than `0` will cause the task to fail if the specified threshold is not met.
+* The `watermarks` config changes the thresholds at which the reports are displayed in red, yellow and green. It does not affect the outcome of the task.
+* Setting the `report` list will allow different types of istanbul report to be set.
 
 
 #### options.projectRoot
@@ -190,7 +192,7 @@ please be as specific as possible including operating system, `node`, `grunt`, a
 npm --versions
 ```
 
-## Migrating from pre v1 release
+## Migrating from before `v1.0.0` release
 
 If you are updating to v1.0.0, you'll need to update your Gruntfile.
 
@@ -249,6 +251,9 @@ Please note that the junit reporter is no longer available. If you are using thi
 
 ## Release History
 
+* `v1.1.0` (2016-08-23)
+  - Add Node.js `v0.10.0` support back by using `var` instead of `const` and `let`, #55
+  - Teamcity reporter for Jasmine, #56
 * `v1.0.0` (2016-07-23)
   - **Breaking changes alert! Ensure you read the migration guide before updating from previous versions**
   - Minimum supported Node.js version is `4.2.0` (LTS), removed testing against `0.10`
