@@ -194,7 +194,7 @@ npm --versions
 
 ## Migrating from before `v1.0.0` release
 
-If you are updating to v1.0.0, you'll need to update your Gruntfile.
+If you are updating to `v1.0.0`, you'll need to update your Gruntfile.
 
 The following example outlines the changes needed. It assumes the following folder structure:
 
