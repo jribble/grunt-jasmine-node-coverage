@@ -312,7 +312,7 @@ module.exports = function jasmineNodeTask(grunt) {
       options.coverage.report = options.coverage.report || ['lcov', 'text-summary'];
     }
 
-    fileSrc = this.filesSrc || fileSrc;
+    fileSrc = this.data.src || fileSrc;
 
     // Tell grunt this task is asynchronous.
     done = this.async();
