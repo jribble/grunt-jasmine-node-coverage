@@ -38,14 +38,14 @@
   ],
   "dependencies": {
     "deepmerge": "^0.2.10",
-    "istanbul": "^0.4.4",
+    "istanbul": "^0.4.5",
     "jasmine": "^2.4.1",
     "jasmine-reporters": "^2.2.0",
     "jasmine-spec-reporter": "^2.5.0"
   },
   "devDependencies": {
     "grunt": "^1.0.1",
-    "grunt-eslint": "^19.0.0"
+    "grunt-eslint": "^18.0.0"
   },
   "peerDependencies": {
     "grunt": "^1.0.0"
