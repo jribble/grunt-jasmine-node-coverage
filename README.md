@@ -251,6 +251,8 @@ Please note that the junit reporter is no longer available. If you are using thi
 
 ## Release History
 
+* `v1.1.1` (2016-08-29)
+  - Istanbul `v0.4.5` and using `data.src` instead of `fileSrc` for compatibility #59
 * `v1.1.0` (2016-08-23)
   - Add Node.js `v0.10.0` support back by using `var` instead of `const` and `let`, #55
   - Teamcity reporter for Jasmine, #56
