@@ -44,11 +44,11 @@
     "jasmine-spec-reporter": "^2.5.0"
   },
   "devDependencies": {
-    "grunt": ">=0.4.5",
+    "grunt": "^1.0.1",
     "grunt-eslint": "^18.0.0"
   },
   "peerDependencies": {
-    "grunt": "^1.0.0"
+    "grunt": ">=0.4.5"
   },
   "keywords": [
     "gruntplugin",
