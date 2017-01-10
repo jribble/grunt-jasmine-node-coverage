@@ -192,9 +192,42 @@ please be as specific as possible including operating system, `node`, `grunt`, a
 npm --versions
 ```
 
-## Migrating from before `v1.0.0` release
+## Migration notes
 
-If you are updating to `v1.0.0`, you'll need to update your Gruntfile.
+### v1.x -> v2.x
+
+The `spec` reporter configuration has changed for v2 of this plugin. The following is an example of the change in configuration that is needed. This is not an exhaustive list: refer to the [jasmine-spec-reporter](https://github.com/bcaudan/jasmine-spec-reporter) for a full reference of the configuration options.
+
+``` js
+// v1
+reporters: {
+  spec: {
+    colors: true,
+    displayStacktrace: 'summary',
+    displaySuccessfulSpec: true
+  }
+}
+
+// v2
+reporters: {
+  spec: {
+    colors: {
+      enabled: true
+    },
+    summary: {
+      displayStacktrace: true
+    },
+    spec: {
+      displaySuccessful: true
+    }
+  }
+}
+```
+
+
+### v0.x -> v1.x
+
+If you are updating to `v1.x`, you'll need to update your Gruntfile.
 
 The following example outlines the changes needed. It assumes the following folder structure:
 
@@ -250,7 +283,10 @@ app/
 Please note that the junit reporter is no longer available. If you are using this reporter and wish to update to v1, please open a new issue and we'll see if we can get it added back in. Even better, submit a PR :smile:
 
 ## Release History
-
+* `unreleased`
+ - **Breaking changes alert! Ensure you read the migration guide before updating from previous versions**
+ - Updated to jasmine-spec-reporter v3.1.0. Older style configuration needs to be updated, see migration guide for more details.
+ - Removed support for Node.js v0.10
 * `v1.1.1` (2016-08-29)
   - Istanbul `v0.4.5` and using `data.src` instead of `fileSrc` for compatibility #59
 * `v1.1.0` (2016-08-23)
