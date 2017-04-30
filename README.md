@@ -251,6 +251,8 @@ Please note that the junit reporter is no longer available. If you are using thi
 
 ## Release History
 
+* `v1.2.0` (2017-04-30)
+  - Was compatible with Grunt `0.4` all the time, hence lowering the dependency requirement #60
 * `v1.1.1` (2016-08-29)
   - Istanbul `v0.4.5` and using `data.src` instead of `fileSrc` for compatibility #59
 * `v1.1.0` (2016-08-23)
