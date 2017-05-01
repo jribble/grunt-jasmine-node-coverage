@@ -80,10 +80,12 @@ Jasmine specific configuration. Use empty object,
 
 See the [jasmine docs](http://jasmine.github.io/2.4/node.html#section-Configuration) for more information on the supported configuration.
 
-The `reporters` property allows the one of the following properties:
+The `reporters` property allows the following properties:
 
 * `spec`: used to configure the [Jasmine spec reporter](https://github.com/bcaudan/jasmine-spec-reporter).
 * `teamcity` set it to `true` in order to use [Jasmine Reporters - TeamCityReporter](https://github.com/larrymyers/jasmine-reporters).
+* `junitXml` set it to a object to use [Jasmine Reporters - JUnitXmlReporter](https://github.com/larrymyers/jasmine-reporters).  See the jasmine-reporters
+documentation for additional configuration options.
 
 If `teamcity` reporter is set `spec` reporter will be disabled and `teamcity` reporter will be added to the coverage reporters as well.
 
@@ -96,6 +98,21 @@ Example of using `teamcity` reporter:
   helpers: [],
   reporters: {
     teamcity: true
+  }
+}
+```
+
+Example of using `junitXml` reporter:
+
+```js
+{
+  spec_dir: 'spec',
+  spec_files: ['**/*[sS]pec/.js'],
+  helpers: [],
+  reporters: {
+  junitXml: {
+    savePath: "reports",
+    consolidateAll: true
   }
 }
 ```
