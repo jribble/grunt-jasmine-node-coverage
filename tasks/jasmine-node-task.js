@@ -180,7 +180,7 @@ module.exports = function jasmineNodeTask(grunt) {
       reporter.name = 'TeamCity Reporter';
       jasmine.addReporter(reporter);
     }
-    else if(ropts.spec) {
+    else if (ropts.spec) {
       reporter = new SpecReporter(ropts.spec);
       reporter.name = 'Spec Reporter';
       jasmine.addReporter(reporter);
