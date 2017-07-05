@@ -8,7 +8,7 @@ var fs = require('fs'),
 // 3rd party dependencies
 var istanbul = require('istanbul'),
   Jasmine = require('jasmine'),
-  SpecReporter = require('jasmine-spec-reporter'),
+  SpecReporter = require('jasmine-spec-reporter').SpecReporter,
   deepmerge = require('deepmerge'),
   reporters = require('jasmine-reporters');
 
@@ -172,6 +172,8 @@ module.exports = function jasmineNodeTask(grunt) {
   };
 
   var addReporters = function addReporters(jasmine) {
+    jasmine.env.clearReporters();
+
     var ropts = options.jasmine.reporters;
 
     var reporter;
