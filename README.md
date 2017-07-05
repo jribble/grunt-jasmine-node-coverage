@@ -80,10 +80,12 @@ Jasmine specific configuration. Use empty object,
 
 See the [jasmine docs](http://jasmine.github.io/2.4/node.html#section-Configuration) for more information on the supported configuration.
 
-The `reporters` property allows the one of the following properties:
+The `reporters` property allows the following properties:
 
 * `spec`: used to configure the [Jasmine spec reporter](https://github.com/bcaudan/jasmine-spec-reporter).
 * `teamcity` set it to `true` in order to use [Jasmine Reporters - TeamCityReporter](https://github.com/larrymyers/jasmine-reporters).
+* `junitXml` set it to a object to use [Jasmine Reporters - JUnitXmlReporter](https://github.com/larrymyers/jasmine-reporters).  See the jasmine-reporters
+documentation for additional configuration options.
 
 If `teamcity` reporter is set `spec` reporter will be disabled and `teamcity` reporter will be added to the coverage reporters as well.
 
@@ -96,6 +98,21 @@ Example of using `teamcity` reporter:
   helpers: [],
   reporters: {
     teamcity: true
+  }
+}
+```
+
+Example of using `junitXml` reporter:
+
+```js
+{
+  spec_dir: 'spec',
+  spec_files: ['**/*[sS]pec/.js'],
+  helpers: [],
+  reporters: {
+  junitXml: {
+    savePath: "reports",
+    consolidateAll: true
   }
 }
 ```
@@ -283,10 +300,13 @@ app/
 Please note that the junit reporter is no longer available. If you are using this reporter and wish to update to v1, please open a new issue and we'll see if we can get it added back in. Even better, submit a PR :smile:
 
 ## Release History
+
 * `unreleased`
- - **Breaking changes alert! Ensure you read the migration guide before updating from previous versions**
- - Updated to jasmine-spec-reporter v3.1.0. Older style configuration needs to be updated, see migration guide for more details.
- - Removed support for Node.js v0.10
+  - **Breaking changes alert! Ensure you read the migration guide before updating from previous versions**
+  - Updated to jasmine-spec-reporter v3.1.0. Older style configuration needs to be updated, see migration guide for more details.
+  - Removed support for Node.js v0.10
+* `v1.2.0` (2017-04-30)
+  - Was compatible with Grunt `0.4` all the time, hence lowering the dependency requirement #60
 * `v1.1.1` (2016-08-29)
   - Istanbul `v0.4.5` and using `data.src` instead of `fileSrc` for compatibility #59
 * `v1.1.0` (2016-08-23)

@@ -41,6 +41,10 @@ module.exports = function (grunt) {
               spec: {
                 colors: true
               },
+              junitXml: {
+                savePath: "reports",
+                consolidateAll: true
+              }
               // Uncomment line below to activate teamcity reporter
               //teamcity: true
             }

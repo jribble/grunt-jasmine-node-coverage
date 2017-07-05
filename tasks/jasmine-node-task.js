@@ -182,9 +182,14 @@ module.exports = function jasmineNodeTask(grunt) {
       reporter.name = 'TeamCity Reporter';
       jasmine.addReporter(reporter);
     }
-    else {
+    else if (ropts.spec) {
       reporter = new SpecReporter(ropts.spec);
       reporter.name = 'Spec Reporter';
+      jasmine.addReporter(reporter);
+    }
+
+    if (ropts.junitXml){
+      reporter = new reporters.JUnitXmlReporter(ropts.junitXml);
       jasmine.addReporter(reporter);
     }
   };
@@ -279,7 +284,6 @@ module.exports = function jasmineNodeTask(grunt) {
       jasmine: {
         spec_dir: 'spec',
         reporters: {
-          spec: {}
         }
       },
 
