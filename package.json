@@ -39,9 +39,9 @@
   "dependencies": {
     "deepmerge": "^1.5.1",
     "istanbul": "^0.4.5",
-    "jasmine": "^2.8.0",
+    "jasmine": "2.5.2",
     "jasmine-reporters": "^2.2.1",
-    "jasmine-spec-reporter": "^4.2.1"
+    "jasmine-spec-reporter": "3.3.0"
   },
   "devDependencies": {
     "grunt": "^1.0.1",
