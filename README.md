@@ -302,6 +302,8 @@ Please note that the junit reporter is no longer available. If you are using thi
 
 ## Release History
 
+* `v2.0.1` (2017-09-20)
+  - Looks like the compatibility between different dependencies requires to use `jasmine` of version `2.5.2`, which is not the latest (`2.5.3`)
 * `v2.0.0` (2017-09-20)
   - **Breaking changes alert! Ensure you read the migration guide before updating from previous versions**
   - Updated to jasmine-spec-reporter `v3.3.0`. Older style configuration needs to be updated, see migration guide for more details.
