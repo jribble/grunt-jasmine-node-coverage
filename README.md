@@ -110,9 +110,10 @@ Example of using `junitXml` reporter:
   spec_files: ['**/*[sS]pec/.js'],
   helpers: [],
   reporters: {
-  junitXml: {
-    savePath: "reports",
-    consolidateAll: true
+    junitXml: {
+      savePath: "reports",
+      consolidateAll: true
+    }
   }
 }
 ```
@@ -178,7 +179,7 @@ Type: `boolean`
 
 Default: `false`
 
-Exit on failure by skipping any asyncronous tasks pending.
+Exit on failure by skipping any asynchronous tasks pending.
 
 
 #### options.captureExceptions
@@ -215,7 +216,7 @@ npm --versions
 
 The `spec` reporter configuration has changed for v2 of this plugin. The following is an example of the change in configuration that is needed. This is not an exhaustive list: refer to the [jasmine-spec-reporter](https://github.com/bcaudan/jasmine-spec-reporter) for a full reference of the configuration options.
 
-``` js
+```js
 // v1
 reporters: {
   spec: {
@@ -301,10 +302,10 @@ Please note that the junit reporter is no longer available. If you are using thi
 
 ## Release History
 
-* `unreleased`
+* `v2.0.0` (2017-09-20)
   - **Breaking changes alert! Ensure you read the migration guide before updating from previous versions**
-  - Updated to jasmine-spec-reporter v3.1.0. Older style configuration needs to be updated, see migration guide for more details.
-  - Removed support for Node.js v0.10
+  - Updated to jasmine-spec-reporter `v3.1.0`. Older style configuration needs to be updated, see migration guide for more details.
+  - Removed support for Node.js `v0.10`
 * `v1.2.0` (2017-04-30)
   - Was compatible with Grunt `0.4` all the time, hence lowering the dependency requirement #60
 * `v1.1.1` (2016-08-29)
