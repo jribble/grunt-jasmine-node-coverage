@@ -304,7 +304,7 @@ Please note that the junit reporter is no longer available. If you are using thi
 
 * `v2.0.0` (2017-09-20)
   - **Breaking changes alert! Ensure you read the migration guide before updating from previous versions**
-  - Updated to jasmine-spec-reporter `v3.1.0`. Older style configuration needs to be updated, see migration guide for more details.
+  - Updated to jasmine-spec-reporter `v3.3.0`. Older style configuration needs to be updated, see migration guide for more details.
   - Removed support for Node.js `v0.10`
 * `v1.2.0` (2017-04-30)
   - Was compatible with Grunt `0.4` all the time, hence lowering the dependency requirement #60
