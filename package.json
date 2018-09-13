@@ -37,15 +37,15 @@
     "README.md"
   ],
   "dependencies": {
-    "deepmerge": "^1.5.1",
+    "deepmerge": "^2.1.1",
     "istanbul": "^0.4.5",
-    "jasmine": "2.5.2",
-    "jasmine-reporters": "^2.2.1",
-    "jasmine-spec-reporter": "^3.3.0"
+    "jasmine": "3.2.0",
+    "jasmine-reporters": "^2.3.2",
+    "jasmine-spec-reporter": "^4.2.1"
   },
   "devDependencies": {
-    "grunt": "^1.0.1",
-    "grunt-eslint": "^20.1.0"
+    "grunt": "^1.0.3",
+    "grunt-eslint": "^21.0.0"
   },
   "peerDependencies": {
     "grunt": ">=0.4.5"
