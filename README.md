@@ -12,7 +12,7 @@ A [Grunt](http://gruntjs.com/) task to run your [Jasmine](http://jasmine.github.
 feature suite using [jasmine-npm](https://github.com/jasmine/jasmine-npm)
 and [Istanbul](https://github.com/gotwarlost/istanbul) for code coverage reports.
 
-The minimum supported Node.js version is `4.2.0` (LTS), and while works also in `0.10.x`, no quarantees are given.
+The minimum supported Node.js version is `4.2.0` (LTS), and while works also in `0.10.x`, no guarantees are given. Also note that Node.js versions prior to 6 are not tested.
 
 ## Getting Started
 
